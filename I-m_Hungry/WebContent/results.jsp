@@ -1,9 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="ISO-8859-1">
-		<title>I'm Hungry</title>
-		<link rel="stylesheet" type="text/css" href="./CSS/search_page.css">
+		<title>Results</title>
+		<link rel="stylesheet" type="text/css" href="./CSS/results.css">
 		
 		<!-- The following are CDNs for Bootstrap which I think we should use (but don't HAVE to), learn how at w3schools.com -->
 		<!-- Latest compiled and minified CSS -->

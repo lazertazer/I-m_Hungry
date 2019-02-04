@@ -1,1 +1,9 @@
 @charset "ISO-8859-1";
+#collage {
+	height: 35vh;				/* 35-50 */
+	width: 60vw;				/* 40-60 */
+	position: relative;
+	border: 1px solid black;	/* optional border */
+	margin: auto;				/* centered */
+	overflow: hidden;			/* keep images from leaving borders */
+}

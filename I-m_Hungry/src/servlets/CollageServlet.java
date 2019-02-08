@@ -40,12 +40,12 @@ public class CollageServlet extends HttpServlet {
 		request.setAttribute("query", "pie/pizza hypercar_burger");
 		
 		//Split query into an array of words
-		String[] querryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
+		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
 		
 		//Concatenate search query terms with '+'
-		String parameters = querryArray[0];
-		for (int i = 1; i < querryArray.length; i++) {
-			parameters += "+" + querryArray[i];
+		String parameters = queryArray[0];
+		for (int i = 1; i < queryArray.length; i++) {
+			parameters += "+" + queryArray[i];
 		}
 		
 		String CSE_url = "https://www.googleapis.com/customsearch/v1?";	//Google Custom Search Engine API (only 50 free calls per day)

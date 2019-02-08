@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -23,6 +22,43 @@
 				<img class="image" src="${image}" />
 			</c:forEach>
 			<script src="./JS/scatterCollage.js"></script>
+		</div>
+		
+		<div>
+			<table style="float: left">
+				<c:forEach items="${restaurantResults}" var="result">
+					<tr>
+						<td>
+							<table class="restaurantResultTable">
+								<tr>
+									<td class="restaurantName">
+										${result.getName()}
+									</td>
+									<td>
+										<div class="star-ratings">
+											<div class="star-top" style="width: ${result.getRating()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+											<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										(Distance to TT)
+									</td>
+									<td>
+										${result.getAddress()}
+									</td>
+									<td>
+										${result.getPriceRange()}
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+			<table style="float: left">
+			</table>
 		</div>
 	</body>
 </html>

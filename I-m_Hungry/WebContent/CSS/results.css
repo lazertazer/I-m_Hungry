@@ -7,3 +7,10 @@
 	margin: auto;				/* centered */
 	overflow: hidden;			/* keep images from leaving borders */
 }
+
+.image {
+	max-width: 75%;
+	max-height: 75%;
+	position: absolute;
+	top: 5vh;
+}

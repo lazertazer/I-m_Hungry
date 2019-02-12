@@ -6,9 +6,9 @@ public class Location {
 	private String city;
 	private double latitude;
 	private double longitude;
-	private int zipcode;
+	private String zipcode;
 	public Location(String address, String locality, String city,
-					double latitude, double longitude, int zipcode) {
+					double latitude, double longitude, String zipcode) {
 		this.address = address;
 		this.locality = locality;
 		this.city = city;
@@ -31,7 +31,7 @@ public class Location {
 	public double getLongitude() {
 		return longitude;
 	}
-	public int getZipcode() {
+	public String getZipcode() {
 		return zipcode;
 	}
 }

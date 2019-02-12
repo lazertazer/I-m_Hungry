@@ -1,4 +1,8 @@
 @charset "ISO-8859-1";
+body {
+	background-color: #f5f5f5;
+}
+
 #collage {
 	height: 35vh;				/* 35-50 */
 	width: 60vw;				/* 40-60 */
@@ -18,15 +22,14 @@
 
 
 .star-ratings {
-  unicode-bidi: bidi-override;
-  color: #c5c5c5;
-  font-size: 25px;
-  height: 25px;
-  width: 100px;
-  margin: 0 auto;
-  position: relative;
-  padding: 0;
-  text-shadow: 0px 1px 0 #a2a2a2;
+	unicode-bidi: bidi-override;
+	color: #c5c5c5;
+	font-size: 25px;
+	float: right;
+	margin: 0 auto;
+	position: relative;
+	padding: 0;
+	text-shadow: 0px 1px 0 #a2a2a2;
 }
 .star-top {
     color: #e7711b;
@@ -45,9 +48,83 @@
 }
 
 
-.restaurantResultTable {
+#dropdownButtons {
+	position: absolute;
+	top: 2vh;
+	right: 2vw;
+	display: inline-table;
+	width: 13vw;
+	height: 8vw;
+	border-collapse: separate;
+}
+#dropdownButtons tr {
+	border: 1px solid black;
+	width: 100%;
+	margin-bottom: 2vh;
+}
+#dropdownButtons select {
+	width: 100%;
+	height: 2em;
+	line-height: 2em;
+}
+#dropdownButtons button {
+	width: 100%;
+}
+
+
+h1 {
+	width: 100%;
+	text-align: center;
+}
+h2 {
+	width: 100%;
+	text-align: center;
+}
+
+
+#restaurantTable {
+	float: left;
+	width: 49.7%;
+	display: inline-table;
+	border-collapse: collapse;
+}
+.restaurantCell {
+	width: 100%;
+	height: 12vh;
 	border: 1px solid black;
 }
-.restaurantResultTable td {
-	padding: 10px;
+.restaurantCellTable {
+	width: 100%;
+	height: 100%;
+}
+.restaurantCellTable td {
+	padding-left: 2vw;
+	padding-right: 2vw;
+}
+.restaurantName {
+	width: 40%;
+}
+
+
+#recipeTable {
+	float: right;
+	width: 49.7%;
+	display: inline-table;
+	border-collapse: collapse;
+}
+.recipeCell {
+	width: 100%;
+	height: 12vh;
+	border: 1px solid black;
+}
+.recipeCellTable {
+	width: 100%;
+	height: 100%;
+}
+.recipeCellTable td {
+	padding-left: 2vw;
+	padding-right: 2vw;
+}
+.recipeName {
+	width: 40%;
 }

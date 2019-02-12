@@ -35,10 +35,6 @@ public class CollageServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 							throws ServletException, IOException {
-		
-		//for testing purposes TODO remove
-		request.setAttribute("query", "pie/pizza hypercar_burger");
-		
 		//Split query into an array of words
 		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
 		
@@ -48,7 +44,7 @@ public class CollageServlet extends HttpServlet {
 			parameters += "+" + queryArray[i];
 		}
 		
-		String CSE_url = "https://www.googleapis.com/customsearch/v1?";	//Google Custom Search Engine API (only 50 free calls per day)
+		String CSE_url = "https://www.googleapis.com/customsearch/v1?";	//Google Custom Search Engine API (50 calls per day)
 		CSE_url += "key=AIzaSyAVrKq--dMNOkfH4p6kjrKIiqGhZ4alq5k";		//API key
 		CSE_url += "&cx=016870486013668844652:p_im0w326so";				//CSE identifier
 		CSE_url += "&searchType=image&num=10";							//Set to search 10 images
@@ -75,7 +71,7 @@ public class CollageServlet extends HttpServlet {
 		//Use Gson to parse the JSON response
 		Gson gson = new Gson();
 		JsonObject body = gson.fromJson(CSE_response.toString(), JsonObject.class);
-		JsonArray items = body.get("items").getAsJsonArray();
+		JsonArray items = body.getAsJsonArray("items");
 		
 		//Add each image URL to a list
 		ArrayList<String> images = new ArrayList<String>();

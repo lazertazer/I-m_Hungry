@@ -19,7 +19,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import utilities.RestaurantResult;
+import utilities.Location;
+import utilities.Restaurant;
 
 /**
  * INPUT: request attributes 'query' and 'numResults'
@@ -36,11 +37,8 @@ public class RestaurantSearchServlet extends HttpServlet {
         super();
     }
 
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//For testing purposes TODO remove
-		request.setAttribute("query", "pie/pizza hypercar_burger");
-		request.setAttribute("numResults", 10);
-		
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+							throws ServletException, IOException {
 		//Get user input and split query into an array of words
 		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
 		int numResults = (int)request.getAttribute("numResults");
@@ -79,20 +77,36 @@ public class RestaurantSearchServlet extends HttpServlet {
 		//Use Gson to parse the JSON response
 		Gson gson = new Gson();
 		JsonObject body = gson.fromJson(Zomato_response.toString(), JsonObject.class);
-		JsonArray items = body.get("restaurants").getAsJsonArray();
+		JsonArray items = body.getAsJsonArray("restaurants");
 		
 		//Populate array of helper class results
-		ArrayList<RestaurantResult> restaurants = new ArrayList<RestaurantResult>();
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		for (JsonElement e : items) {
 			JsonObject obj = e.getAsJsonObject().get("restaurant").getAsJsonObject();
 			
 			long ID = obj.get("id").getAsLong();
 			String name = obj.get("name").getAsString();
+			String websiteURL = obj.get("url").getAsString();
+			String imgURL = obj.get("featured_image").getAsString();
+			String phoneNumber = "";
+			if (obj.has("phone_numbers")) {
+				phoneNumber = obj.get("phone_numbers").getAsString();
+			}
+			
+			JsonObject JSONlocation = obj.getAsJsonObject("location");
+			String address = JSONlocation.get("address").getAsString();
+			String locality = JSONlocation.get("locality").getAsString();
+			String city = JSONlocation.get("city").getAsString();
+			double latitude = JSONlocation.get("latitude").getAsDouble();
+			double longitude = JSONlocation.get("longitude").getAsDouble();
+			int zipcode = JSONlocation.get("zipcode").getAsInt();
+			Location location = new Location(address, locality, city, latitude, longitude, zipcode);
+			
 			float rating = obj.get("user_rating").getAsJsonObject().get("aggregate_rating").getAsFloat();
-			String address = obj.get("location").getAsJsonObject().get("address").getAsString();
 			short priceRange = obj.get("price_range").getAsShort();
 			
-			restaurants.add(new RestaurantResult(ID, name, rating, address, priceRange));
+			Restaurant r = new Restaurant(ID, name, websiteURL, imgURL, phoneNumber, location, rating, priceRange);
+			restaurants.add(r);
 		}
 		
 		//Forward to collage servlet

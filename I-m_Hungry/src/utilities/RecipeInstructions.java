@@ -14,9 +14,6 @@ public class RecipeInstructions {
 		this.recipeID = recipeID;
 		this.instructions = new ArrayList<InstructionSet>();
 	}
-	public void addInstructionSet(InstructionSet is) {
-		instructions.add(is);
-	}
 	public long getRecipeID() {
 		return recipeID;
 	}
@@ -25,5 +22,8 @@ public class RecipeInstructions {
 	}
 	public InstructionSet getInstructionSet(int instructionSetIndex) {
 		return instructions.get(instructionSetIndex);
+	}
+	public void addInstructionSet(InstructionSet is) {
+		instructions.add(is);
 	}
 }

@@ -22,6 +22,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 	private HttpServletRequest request;
 	private String parameters;
 	private int numResults;
+	
 	public RecipeSearchThread(HttpServletRequest request, String parameters, int numResults) {
 		this.request = request;
 		this.parameters = parameters;
@@ -46,7 +47,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			//Set up connection
 			HttpURLConnection con = (HttpURLConnection) (new URL(Spoonacular_url)).openConnection();
 			con.setRequestMethod("GET");
-			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY HERE");	//API key
+			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY");
 			
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
@@ -111,7 +112,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 						
 						long ingredientID = JSONingredient.get("id").getAsLong();
 						String ingredientName = JSONingredient.get("name").getAsString();
-						int amount = JSONingredient.get("amount").getAsInt();
+						String amount = JSONingredient.get("amount").getAsString();
 						String unit = JSONingredient.get("unit").getAsString();
 						String original = JSONingredient.get("originalString").getAsString();
 						

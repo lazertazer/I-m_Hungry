@@ -17,7 +17,15 @@ import threads.RecipeSearchThread;
 import threads.RestaurantSearchThread;
 
 /**
- * Servlet implementation class SearchServlet
+ * INPUT: User search query and desired number of results
+ * FUNCTION:
+ *     Build a String of parameters from the query
+ *     Use Executor service to run three threads:
+ *         CollageThread
+ *         RestaurantSearchThread
+ *         RecipeSearchThread
+ *     Each thread calls an API, parses the response, and sets request attribute
+ *     Once all threads are finished, forward to results.jsp
  */
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
@@ -30,8 +38,8 @@ public class SearchServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 						throws ServletException, IOException {
 		//For testing purposes TODO remove
-		request.setAttribute("query", "pasta/chicken");
-		request.setAttribute("numResults", 8);
+		request.setAttribute("query", "donald trump");
+		request.setAttribute("numResults", 4);
 		
 		//Get user input and split query into an array of words
 		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
@@ -49,12 +57,13 @@ public class SearchServlet extends HttpServlet {
 		es.execute(new RestaurantSearchThread(request, parameters, numResults));
 		es.execute(new RecipeSearchThread(request, parameters, numResults));
 		es.shutdown();
-		boolean finished;
 		try {
-			finished = es.awaitTermination(20, TimeUnit.SECONDS);
+			//Wait for all threads to finish
+			boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
 		} catch (InterruptedException ie) {}
 		
+		//Forward to results.jsp
 		RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");
-		dispatch.forward(request,  response);
+		dispatch.forward(request, response);
 	}
 }

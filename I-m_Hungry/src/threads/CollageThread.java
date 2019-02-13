@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 public class CollageThread extends APIcall implements Runnable {
 	private HttpServletRequest request;
 	private String parameters;
+	
 	public CollageThread(HttpServletRequest request, String parameters) {
 		this.request = request;
 		this.parameters = parameters;

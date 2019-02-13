@@ -39,14 +39,14 @@ public class Recipe {
 	public boolean useTotalMinutes() {
 		return (prepMinutes == 0 || cookMinutes == 0);
 	}
+	public int getTotalMinutes() {
+		return totalMinutes;
+	}
 	public int getPrepMinutes() {
 		return prepMinutes;
 	}
 	public int getCookMinutes() {
 		return cookMinutes;
-	}
-	public int getTotalMinutes() {
-		return totalMinutes;
 	}
 	public short getServings() {
 		return servings;

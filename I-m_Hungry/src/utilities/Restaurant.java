@@ -3,8 +3,8 @@ package utilities;
 public class Restaurant {
 	private long ID;
 	private String name;
-	private String url;
-	private String featuredImageUrl;
+	private String siteURL;
+	private String imageURL;
 	private String phoneNumber;
 	private Location location;
 	private short rating;
@@ -14,8 +14,8 @@ public class Restaurant {
 					String phoneNumber, Location location, float ratingOf5, short priceRange) {
 		this.ID = ID;
 		this.name = name;
-		this.url = websiteURL;
-		this.featuredImageUrl = imgURL;
+		this.siteURL = websiteURL;
+		this.imageURL = imgURL;
 		this.phoneNumber = phoneNumber;
 		this.location = location;						//Helper class
 		this.rating = (short)((rating / 5) * 100);		//Get rating as percentage
@@ -28,10 +28,10 @@ public class Restaurant {
 		return name;
 	}
 	public String getURL() {
-		return url;
+		return siteURL;
 	}
 	public String getImageURL() {
-		return featuredImageUrl;
+		return imageURL;
 	}
 	public String getPhoneNumber() {
 		return phoneNumber;

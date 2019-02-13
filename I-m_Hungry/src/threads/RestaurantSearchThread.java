@@ -18,6 +18,7 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 	private HttpServletRequest request;
 	private String parameters;
 	private int numResults;
+	
 	public RestaurantSearchThread(HttpServletRequest request, String parameters, int numResults) {
 		this.request = request;
 		this.parameters = parameters;

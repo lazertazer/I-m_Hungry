@@ -3,10 +3,10 @@ package utilities;
 public class Ingredient {
 	private long ingredientID;
 	private String name;
-	private int amount;
+	private String amount;
 	private String unit;
 	private String originalString;
-	public Ingredient(long ingredientID, String name, int amount, String unit, String original) {
+	public Ingredient(long ingredientID, String name, String amount, String unit, String original) {
 		this.ingredientID = ingredientID;
 		this.name = name;
 		this.amount = amount;
@@ -19,7 +19,7 @@ public class Ingredient {
 	public String getName() {
 		return name;
 	}
-	public int getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 	public String getUnit() {

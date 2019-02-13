@@ -19,10 +19,10 @@ public class InstructionSet {
 	public ArrayList<Step> getSteps() {
 		return steps;
 	}
-	public void addStep(Step s) {
-		steps.add(s);
-	}
 	public Step getStep(int stepIndex) {
 		return steps.get(stepIndex);
+	}
+	public void addStep(Step s) {
+		steps.add(s);
 	}
 }

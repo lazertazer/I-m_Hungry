@@ -29,7 +29,7 @@ import utilities.ListContainer;
  *     Each thread calls an API, parses the response, and sets request attribute
  *     Once all threads are finished, forward to results.jsp
  */
-@WebServlet("/SearchServlet")
+@WebServlet("/Search")
 public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

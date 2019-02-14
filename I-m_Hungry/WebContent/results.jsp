@@ -6,6 +6,23 @@
 		<meta charset="ISO-8859-1">
 		<title>Results</title>
 		<link rel="stylesheet" type="text/css" href="./CSS/results.css">
+		<script>
+			function postWithID(path, ID) {
+				var form = document.createElement("form");
+				form.setAttribute("method", "post");
+				form.setAttribute("action", path);
+				
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", "ID_parameter");
+				hiddenField.setAttribute("value", ID);
+				
+				form.appendChild(hiddenField);
+				
+				document.body.appendChild(form);
+				form.submit();
+			}
+		</script>
 	</head>
 	<body>
 		<div id="collage">
@@ -50,7 +67,9 @@
 			</thead>
 			<c:forEach items="${restaurantResults}" var="result" varStatus="loop">
 				<tr>
-					<td class="restaurantCell" style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}">
+					<td class="restaurantCell"
+					style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}"
+					onclick="postWithID('./RestaurantInfo', ${result.getID()})">
 						<table class="restaurantCellTable">
 							<tr>
 								<td class="restaurantName">
@@ -90,7 +109,9 @@
 			</thead>
 			<c:forEach items="${recipeResults}" var="result" varStatus="loop">
 				<tr>
-					<td class="recipeCell" style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}">
+					<td class="recipeCell"
+					style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}"
+					onclick="postWithID('./RecipeInfo', ${result.getID()})">
 						<table class="recipeCellTable">
 							<tr>
 								<td class="recipeName">

@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import utilities.Ingredient;
 import utilities.InstructionSet;
+import utilities.ListContainer;
 import utilities.Recipe;
 import utilities.RecipeIngredients;
 import utilities.RecipeInstructions;
@@ -22,11 +23,13 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 	private HttpServletRequest request;
 	private String parameters;
 	private int numResults;
+	private ListContainer userLists;
 	
-	public RecipeSearchThread(HttpServletRequest request, String parameters, int numResults) {
+	public RecipeSearchThread(HttpServletRequest request, String parameters, int numResults, ListContainer userLists) {
 		this.request = request;
 		this.parameters = parameters;
 		this.numResults = numResults;
+		this.userLists = userLists;
 	}
 	public void run() {
 		//This "complex search" is the only way to get all the information we need from the recipe
@@ -52,6 +55,10 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			
+			//Get the the list of restaurant IDs from the user lists that affect search results
+			ArrayList<Long> favoriteIDs = userLists.getFavorites().getRecipeIDs();
+			ArrayList<Long> doNotShowIDs = userLists.getNoShow().getRecipeIDs();
+			
 			//Populate array of Recipe helper class
 			JsonArray items = body.getAsJsonArray("results");
 			ArrayList<Recipe> recipes = new ArrayList<Recipe>();
@@ -59,6 +66,10 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 				JsonObject JSONrecipe = e.getAsJsonObject();
 				
 				long ID = JSONrecipe.get("id").getAsLong();
+				if (doNotShowIDs.contains(ID)) {
+					//Skip adding this restaurant because it's on the 'do not show' list
+					continue;
+				}
 				String name = JSONrecipe.get("title").getAsString();
 				String source = JSONrecipe.get("sourceUrl").getAsString();
 				int prepMinutes = 0;
@@ -73,6 +84,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 				short servings = JSONrecipe.get("servings").getAsShort();
 				String image = JSONrecipe.get("image").getAsString();
 				
+				//TODO deal with likes/score?
 	/*			int agLikes = JSONrecipe.get("aggregateLikes").getAsInt();
 				int likes = JSONrecipe.get("likes").getAsInt();
 				int score = JSONrecipe.get("spoonacularScore").getAsInt();*/
@@ -120,10 +132,17 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 						ingredients.addIngredient(ig);
 					}	
 				}
-				//TODO deal with likes/score?
 				Recipe r = new Recipe(ID, name, source, prepMinutes, cookMinutes,
 									minutes, servings, image, instructions, ingredients);
-				recipes.add(r);
+				
+				//If restaurant is in favorites, add to the beginning
+				//else, add to the end
+				if (favoriteIDs.contains(ID)) {
+					recipes.add(0, r);
+				}
+				else {
+					recipes.add(r);	
+				}
 			}
 			//Include recipes in request for display on results.jsp
 			request.setAttribute("recipeResults", recipes);

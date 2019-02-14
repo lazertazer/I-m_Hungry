@@ -11,10 +11,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import threads.CollageThread;
 import threads.RecipeSearchThread;
 import threads.RestaurantSearchThread;
+import utilities.ListContainer;
 
 /**
  * INPUT: User search query and desired number of results
@@ -38,8 +40,16 @@ public class SearchServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 						throws ServletException, IOException {
 		//For testing purposes TODO remove
-		request.setAttribute("query", "donald trump");
+		request.setAttribute("query", "pasta meat");
 		request.setAttribute("numResults", 4);
+		
+		//Retrieve the session and user saved lists, create them if they don't exist
+		HttpSession session = request.getSession();
+		ListContainer userListContainer = (ListContainer)session.getAttribute("userListContainer");
+		if (userListContainer == null) {
+			userListContainer = new ListContainer();
+			session.setAttribute("userListContainer", userListContainer);
+		}
 		
 		//Get user input and split query into an array of words
 		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
@@ -51,11 +61,11 @@ public class SearchServlet extends HttpServlet {
 			parameters += "+" + queryArray[i];
 		}
 		
-		//Pass user input to each thread to make the API calls and set request attributes
+		//Pass user input and lists to each thread to make the API calls and set request attributes
 		ExecutorService es = Executors.newCachedThreadPool();
 		es.execute(new CollageThread(request, parameters));
-		es.execute(new RestaurantSearchThread(request, parameters, numResults));
-		es.execute(new RecipeSearchThread(request, parameters, numResults));
+		es.execute(new RestaurantSearchThread(request, parameters, numResults, userListContainer));
+		es.execute(new RecipeSearchThread(request, parameters, numResults, userListContainer));
 		es.shutdown();
 		try {
 			//Wait for all threads to finish

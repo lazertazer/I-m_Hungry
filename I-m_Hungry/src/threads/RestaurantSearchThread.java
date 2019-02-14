@@ -11,6 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import utilities.ListContainer;
 import utilities.Location;
 import utilities.Restaurant;
 
@@ -18,11 +19,13 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 	private HttpServletRequest request;
 	private String parameters;
 	private int numResults;
+	private ListContainer userLists;
 	
-	public RestaurantSearchThread(HttpServletRequest request, String parameters, int numResults) {
+	public RestaurantSearchThread(HttpServletRequest request, String parameters, int numResults, ListContainer userLists) {
 		this.request = request;
 		this.parameters = parameters;
 		this.numResults = numResults;
+		this.userLists = userLists;
 	}
 	public void run() {
 		String Zomato_url = "https://developers.zomato.com/api/v2.1/search?";	//Zomato restaurant API
@@ -42,6 +45,10 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			
+			//Get the the list of restaurant IDs from the user lists that affect search results
+			ArrayList<Long> favoriteIDs = userLists.getFavorites().getRestaurantIDs();
+			ArrayList<Long> doNotShowIDs = userLists.getNoShow().getRestaurantIDs();
+			
 			//Populate array of Restaurant helper class
 			JsonArray items = body.getAsJsonArray("restaurants");
 			ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
@@ -49,6 +56,10 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 				JsonObject obj = e.getAsJsonObject().get("restaurant").getAsJsonObject();
 				
 				long ID = obj.get("id").getAsLong();
+				if (doNotShowIDs.contains(ID)) {
+					//Skip adding this restaurant because it's on the 'do not show' list
+					continue;
+				}
 				String name = obj.get("name").getAsString();
 				String websiteURL = obj.get("url").getAsString();
 				String imgURL = obj.get("featured_image").getAsString();
@@ -71,7 +82,15 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 				short priceRange = obj.get("price_range").getAsShort();
 				
 				Restaurant r = new Restaurant(ID, name, websiteURL, imgURL, phoneNumber, location, rating, priceRange);
-				restaurants.add(r);
+				
+				//If restaurant is in favorites, add to the beginning
+				//else, add to the end
+				if (favoriteIDs.contains(ID)) {
+					restaurants.add(0, r);
+				}
+				else {
+					restaurants.add(r);	
+				}
 			}
 			//Include restaurants in request for display on results.jsp
 			request.setAttribute("restaurantResults", restaurants);

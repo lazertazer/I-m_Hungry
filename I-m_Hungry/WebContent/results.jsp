@@ -115,7 +115,7 @@
 										(''.concat(result.getServings()).concat(" servings"))
 										: ("Cook time: ".concat(result.getCookMinutes()).concat(" minutes"))}
 								</td>
-								<td>
+								<td style="text-align: right">
 									${result.getIngredientInfo().getNumIngredients()} ingredients
 								</td>
 							</tr>

@@ -25,7 +25,7 @@ public class CollageThread extends APIcall implements Runnable {
 		CSE_url += "&cx=016870486013668844652:p_im0w326so";				//CSE identifier
 		CSE_url += "&searchType=image&num=10";							//Set to search 10 images
 		CSE_url += "&filter=1";											//Enable duplicate content filter
-		CSE_url += "&q=" + parameters;									//Set query
+		CSE_url += "&q=food+" + parameters;								//Set query
 		
 		try {
 			//Set up connection

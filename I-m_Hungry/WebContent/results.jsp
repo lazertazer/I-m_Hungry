@@ -84,7 +84,8 @@
 							</tr>
 							<tr>
 								<td>
-									(Distance to TT)
+									Driving time:<br>
+									${result.getMinutesFromTT()} ${result.getMinutesFromTT() eq 1 ? 'minute' : 'minutes'}
 								</td>
 								<td>
 									${result.getLocation().getAddress()}
@@ -120,7 +121,7 @@
 								<td colspan="2">
 									<div class="star-ratings">
 										<!-- TODO figure out what to do instead of stars -->
-										<div class="star-top" style="width: 0%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+										<div class="star-top" style="width: ${result.getScore()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 										<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 									</div>
 								</td>

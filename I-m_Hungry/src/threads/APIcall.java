@@ -10,8 +10,9 @@ import com.google.gson.JsonObject;
 
 public abstract class APIcall {
 	public JsonObject readAndParseJSON(HttpURLConnection con) {
-		con.setConnectTimeout(5000);
-		con.setReadTimeout(5000);
+		con.setConnectTimeout(10000);
+		con.setReadTimeout(10000);
+		JsonObject body = null;
 		try {
 			//Read response
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -25,10 +26,10 @@ public abstract class APIcall {
 			
 			//Use Gson to parse and return the JSON response
 			Gson gson = new Gson();
-			JsonObject body = gson.fromJson(CSE_response.toString(), JsonObject.class);
-			return body;	
+			body = gson.fromJson(CSE_response.toString(), JsonObject.class);
 		} catch (IOException e) {
-			return null;
+			System.out.println("IOE: " + e.getMessage() + e.getStackTrace());
 		}
+		return body;
 	}
 }

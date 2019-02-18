@@ -1,12 +1,17 @@
 package threads;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -52,6 +57,9 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY");
 			
+			con.setConnectTimeout(5000);
+			con.setReadTimeout(5000);
+			
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			
@@ -83,11 +91,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 				int minutes = JSONrecipe.get("readyInMinutes").getAsInt();
 				short servings = JSONrecipe.get("servings").getAsShort();
 				String image = JSONrecipe.get("image").getAsString();
-				
-				//TODO deal with likes/score?
-	/*			int agLikes = JSONrecipe.get("aggregateLikes").getAsInt();
-				int likes = JSONrecipe.get("likes").getAsInt();
-				int score = JSONrecipe.get("spoonacularScore").getAsInt();*/
+				short score = JSONrecipe.get("spoonacularScore").getAsShort();
 				
 				//Populate RecipeInstructions helper class
 				JsonArray JSONinstructions = JSONrecipe.getAsJsonArray("analyzedInstructions");			
@@ -132,18 +136,33 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 						ingredients.addIngredient(ig);
 					}	
 				}
+				//Create recipe and add to results
 				Recipe r = new Recipe(ID, name, source, prepMinutes, cookMinutes,
-									minutes, servings, image, instructions, ingredients);
-				
-				//If restaurant is in favorites, add to the beginning
-				//else, add to the end
-				if (favoriteIDs.contains(ID)) {
-					recipes.add(0, r);
-				}
-				else {
-					recipes.add(r);	
-				}
+									minutes, servings, image, score, instructions, ingredients);
+				recipes.add(r);
 			}
+			//Sort results using custom comparator
+			//Favorites go to the beginning, otherwise sort by prep time
+			//Recipes with no prep time are compared using their total time
+			Collections.sort(recipes, new Comparator<Recipe>() {
+				@Override
+				public int compare(Recipe lhs, Recipe rhs) {
+					if (favoriteIDs.contains(lhs.getID())) {
+						return -1;
+					}
+					else if (favoriteIDs.contains(rhs.getID())) {
+						return 1;
+					}
+					
+					int leftTime = lhs.getPrepMinutes();
+					leftTime = leftTime != 0 ? leftTime : lhs.getTotalMinutes();
+
+					int rightTime = rhs.getPrepMinutes();
+					rightTime = rightTime != 0 ? rightTime : rhs.getTotalMinutes();
+					
+					return leftTime < rightTime ? -1 : 1;
+				}
+			});
 			//Include recipes in request for display on results.jsp
 			request.setAttribute("recipeResults", recipes);
 		} catch (IOException ioe) {}

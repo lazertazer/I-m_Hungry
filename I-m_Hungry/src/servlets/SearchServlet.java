@@ -40,8 +40,8 @@ public class SearchServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 						throws ServletException, IOException {
 		//For testing purposes TODO remove
-		request.setAttribute("query", "pasta meat");
-		request.setAttribute("numResults", 4);
+		request.setAttribute("query", "french");
+		request.setAttribute("numResults", 10);
 		
 		//Retrieve the session and user saved lists, create them if they don't exist
 		HttpSession session = request.getSession();

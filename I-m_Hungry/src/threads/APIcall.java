@@ -28,7 +28,7 @@ public abstract class APIcall {
 			Gson gson = new Gson();
 			body = gson.fromJson(CSE_response.toString(), JsonObject.class);
 		} catch (IOException e) {
-			System.out.println("IOE: " + e.getMessage() + e.getStackTrace());
+			System.out.println("IOE: " + e.getMessage());
 		}
 		return body;
 	}

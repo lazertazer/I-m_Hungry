@@ -1,8 +1,6 @@
 package threads;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.Comparator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -163,8 +160,9 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 					return leftTime < rightTime ? -1 : 1;
 				}
 			});
-			//Include recipes in request for display on results.jsp
+			//Include recipes in request for display on results.jsp, and save to session
 			request.setAttribute("recipeResults", recipes);
+			request.getSession().setAttribute("recipeResults", recipes);
 		} catch (IOException ioe) {}
 	}
 }

@@ -21,6 +21,8 @@ import utilities.ListContainer;
 /**
  * INPUT: User search query and desired number of results
  * FUNCTION:
+ * 	   If returning to results from info page,
+ * 		   forward results from session. Otherwise:
  *     Build a String of parameters from the query
  *     Use Executor service to run three threads:
  *         CollageThread
@@ -39,10 +41,6 @@ public class SearchServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 						throws ServletException, IOException {
-		//For testing purposes TODO remove
-		request.setAttribute("query", "french");
-		request.setAttribute("numResults", 10);
-		
 		//Retrieve the session and user saved lists, create them if they don't exist
 		HttpSession session = request.getSession();
 		ListContainer userListContainer = (ListContainer)session.getAttribute("userListContainer");
@@ -50,28 +48,39 @@ public class SearchServlet extends HttpServlet {
 			userListContainer = new ListContainer();
 			session.setAttribute("userListContainer", userListContainer);
 		}
-		
-		//Get user input and split query into an array of words
-		String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
-		int numResults = (int)request.getAttribute("numResults");
-		
-		//Concatenate search query terms with '+'
-		String parameters = queryArray[0];
-		for (int i = 1; i < queryArray.length; i++) {
-			parameters += "+" + queryArray[i];
+		//If going back to results page from an info page, retrieve results from session
+		if (request.getAttribute("BACK") != null) {
+			request.setAttribute("restaurantResults", session.getAttribute("restaurantResults"));
+			request.setAttribute("recipeResults", session.getAttribute("recipeResults"));
+			request.setAttribute("images", session.getAttribute("images"));
+			request.removeAttribute("BACK");
 		}
-		
-		//Pass user input and lists to each thread to make the API calls and set request attributes
-		ExecutorService es = Executors.newCachedThreadPool();
-		es.execute(new CollageThread(request, parameters));
-		es.execute(new RestaurantSearchThread(request, parameters, numResults, userListContainer));
-		es.execute(new RecipeSearchThread(request, parameters, numResults, userListContainer));
-		es.shutdown();
-		try {
-			//Wait for all threads to finish
-			boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
-		} catch (InterruptedException ie) {}
-		
+		else {
+			//For testing purposes TODO remove
+			request.setAttribute("query", "french");
+			request.setAttribute("numResults", 7);
+			
+			//Get user input and split query into an array of words
+			String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
+			int numResults = (int)request.getAttribute("numResults");
+			
+			//Concatenate search query terms with '+'
+			String parameters = queryArray[0];
+			for (int i = 1; i < queryArray.length; i++) {
+				parameters += "+" + queryArray[i];
+			}
+			
+			//Pass user input and lists to each thread to make the API calls and set request attributes
+			ExecutorService es = Executors.newCachedThreadPool();
+			es.execute(new CollageThread(request, parameters));
+			es.execute(new RestaurantSearchThread(request, parameters, numResults, userListContainer));
+			es.execute(new RecipeSearchThread(request, parameters, numResults, userListContainer));
+			es.shutdown();
+			try {
+				//Wait for all threads to finish
+				boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
+			} catch (InterruptedException ie) {}	
+		}
 		//Forward to results.jsp
 		RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");
 		dispatch.forward(request, response);

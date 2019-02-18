@@ -35,22 +35,25 @@
 		<table id="dropdownButtons">
 			<tr>
 				<td>
-					<select>
+					<select name="list" form="dropdown" required>
 						<option value="" disabled selected />
-						<option value="0">Favorites</option>
-						<option value="1">Do Not Show</option>
-						<option value="2">To Explore</option>
+						<option value="FAV">Favorites</option>
+						<option value="DNS">Do Not Show</option>
+						<option value="XPL">To Explore</option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<button type="button">Manage List</button>
+					<form action="./ListManagementServlet" id="dropdown" method="get">
+						<button type="submit">Manage List</button>
+						<input type="hidden" style="display: none" name="operation" value="display">
+					</form>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<button type="button">Return to Search</button>
+					<button type="button" onclick="location.href='search_page.html'">Return to Search</button>
 				</td>
 			</tr>
 		</table>

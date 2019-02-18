@@ -92,8 +92,9 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 					restaurants.add(r);	
 				}
 			}
-			//Include restaurants in request for display on results.jsp
+			//Include restaurants in request for display on results.jsp, and save to session
 			request.setAttribute("restaurantResults", restaurants);
+			request.getSession().setAttribute("restaurantResults", restaurants);
 		} catch (IOException ioe) {}
 	}
 }

@@ -42,8 +42,9 @@ public class CollageThread extends APIcall implements Runnable {
 			for (JsonElement e : items) {
 				images.add(e.getAsJsonObject().get("link").getAsString());
 			}
-			//Include images in request for display on results.jsp
+			//Include images in request for display on results.jsp, and save to session
 			request.setAttribute("images", images);
+			request.getSession().setAttribute("images", images);
 		} catch (IOException ioe) {}
 	}
 }

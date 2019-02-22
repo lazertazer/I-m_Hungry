@@ -1,1 +1,13 @@
 @charset "ISO-8859-1";
+.metaInfo {
+	font-size: 1.15em;
+	margin-top: 0.7vh;
+}
+ul > li {
+	display: inline;
+	position: absolute;
+	font-size: 1.1em;
+}
+.odIng {
+	left: 20vw;
+}

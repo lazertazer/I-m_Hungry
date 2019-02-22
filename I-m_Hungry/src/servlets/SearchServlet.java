@@ -57,7 +57,7 @@ public class SearchServlet extends HttpServlet {
 		}
 		else {
 			//For testing purposes TODO remove
-			request.setAttribute("query", "french");
+			request.setAttribute("query", "pie");
 			request.setAttribute("numResults", 7);
 			
 			//Get user input and split query into an array of words

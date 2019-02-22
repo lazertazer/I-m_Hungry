@@ -20,7 +20,6 @@ public class RestaurantInfoServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 							throws ServletException, IOException {
-		long restaurantID = Long.parseLong(request.getParameter("ID_parameter"));
-		System.out.println(restaurantID);
+		long restaurantID = Long.parseLong(request.getParameter("id"));
 	}
 }

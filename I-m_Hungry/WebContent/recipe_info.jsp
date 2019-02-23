@@ -39,7 +39,7 @@
 				<td>
 					<form action="./ListManagementServlet" id="dropdown" method="get">
 						<button type="submit">Add to List</button>
-						<input type="hidden" style="display: none" name="operation" value="add">
+						<input type="hidden" style="display: none" name="operation" value="addRecipe">
 						<input type="hidden" style="display: none" name="id" value="${recipe.getID()}">
 					</form>
 				</td>

@@ -49,7 +49,8 @@ public class SearchServlet extends HttpServlet {
 			session.setAttribute("userListContainer", userListContainer);
 		}
 		//If going back to results page from an info page, retrieve results from session
-		if (request.getParameter("back") != null) {
+		String back = request.getParameter("back");
+		if (back != null && back.equals("true")) {
 			request.setAttribute("query", session.getAttribute("query"));
 			request.setAttribute("restaurantResults", session.getAttribute("restaurantResults"));
 			request.setAttribute("recipeResults", session.getAttribute("recipeResults"));

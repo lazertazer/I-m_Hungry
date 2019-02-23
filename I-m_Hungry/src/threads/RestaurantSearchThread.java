@@ -63,6 +63,9 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 				String name = obj.get("name").getAsString();
 				String websiteURL = obj.get("url").getAsString();
 				String imgURL = obj.get("featured_image").getAsString();
+				if (imgURL.equals("")) {
+					imgURL = obj.get("thumb").getAsString();
+				}
 				//TODO phone numbers are not included with the free API key :(
 				String phoneNumber = "";
 				if (obj.has("phone_numbers")) {

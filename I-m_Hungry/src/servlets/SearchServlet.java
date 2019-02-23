@@ -49,20 +49,27 @@ public class SearchServlet extends HttpServlet {
 			session.setAttribute("userListContainer", userListContainer);
 		}
 		//If going back to results page from an info page, retrieve results from session
-		if (request.getAttribute("BACK") != null) {
+		if (request.getParameter("back") != null) {
+			request.setAttribute("query", session.getAttribute("query"));
 			request.setAttribute("restaurantResults", session.getAttribute("restaurantResults"));
 			request.setAttribute("recipeResults", session.getAttribute("recipeResults"));
 			request.setAttribute("images", session.getAttribute("images"));
-			request.removeAttribute("BACK");
 		}
 		else {
-			//For testing purposes TODO remove
-			request.setAttribute("query", "pie");
-			request.setAttribute("numResults", 7);
+			//Get parameter inputs
+			String query = request.getParameter("q");
+			int numResults = Integer.parseInt(request.getParameter("num"));
 			
-			//Get user input and split query into an array of words
-			String[] queryArray = ((String)request.getAttribute("query")).split("[ \t&?+_\\/-]");
-			int numResults = (int)request.getAttribute("numResults");
+			//TODO remove this / handle input better
+			if (numResults > 15) {
+				return;
+			}
+			
+			request.setAttribute("query", query);
+			session.setAttribute("query", query);
+			
+			//split query into an array of words
+			String[] queryArray = (query).split("[ \t&?+_\\/-]");
 			
 			//Concatenate search query terms with '+'
 			String parameters = queryArray[0];

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="ISO-8859-1">
+		<meta charset="UTF-8">
 		<title>Results</title>
 		<link rel="stylesheet" type="text/css" href="./CSS/results.css">
 		<script src="./JS/forwardToInfoPage.js"></script>

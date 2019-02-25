@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
 		<title>${restaurant.getName()} - Restaurant Information</title>
 		<link rel="stylesheet" type="text/css" href="./CSS/restaurant_info.css">
+		<script src="./JS/removeElement.js"></script>
 	</head>
 	<body>
 		<h1>${restaurant.getName()}</h1>
@@ -13,8 +14,7 @@
 		<table id="dropdownButtons">
 			<tr>
 				<td>
-					<!-- TODO figure this out -->
-					<button>Printable Version</button>
+					<button onclick="removeElement('dropdownButtons')">Printable Version</button>
 				</td>
 			</tr>
 			<tr>
@@ -66,7 +66,7 @@
 					Phone Number:
 				</td>
 				<td>
-					TODO
+					${restaurant.getPhoneNumber()}
 				</td>
 			</tr>
 			<tr>

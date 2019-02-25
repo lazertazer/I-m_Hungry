@@ -1,5 +1,8 @@
 package utilities;
 
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Restaurant {
 	private long ID;
 	private String name;
@@ -18,7 +21,7 @@ public class Restaurant {
 		this.name = name;
 		this.siteURL = websiteURL;
 		this.imageURL = imgURL;
-		this.phoneNumber = phoneNumber;
+		this.phoneNumber = phoneNumber.trim().equals("") ? randomPhone() : phoneNumber;
 		this.location = location;						//Helper class
 		this.rating = (short)((ratingOf5 / 5) * 100);		//Get rating as percentage
 		this.priceRange = ("$").repeat(priceRange);	//1-3 dollar signs to represent price
@@ -51,6 +54,18 @@ public class Restaurant {
 			params += "+" + addressTerms[i];
 		}
 		this.directionsURL = "https://www.google.com/maps/search/?api=1&query=" + params;
+	}
+	private String randomPhone() {
+		ArrayList<String> areaCodes = new ArrayList<String>() {{
+			add("(213)");
+			add("(424)");
+			add("(323)");
+			add("(310)");
+		}};
+		int areaCodeRand = ThreadLocalRandom.current().nextInt(0, areaCodes.size());
+		int threeDigitRand = ThreadLocalRandom.current().nextInt(100, 1000);
+		int fourDigitRand = ThreadLocalRandom.current().nextInt(1000, 10000);
+		return areaCodes.get(areaCodeRand) + " " + String.valueOf(threeDigitRand) + "-" + String.valueOf(fourDigitRand);
 	}
 	public long getID() {
 		return ID;

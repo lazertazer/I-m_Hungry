@@ -43,8 +43,11 @@ public class ListManagementServlet extends HttpServlet {
 		//id specifies a recipe or result (depends on operation)
 		String id = request.getParameter("id");
 		
+		//srclist only used when moving an item between lists
+		String srcListParam = request.getParameter("srclist");
+		
 		UserList list = null;
-		boolean listInit = false;
+		UserList srcList = null;
 		boolean missingInfo = false;
 		RequestDispatcher dispatch;
 		
@@ -58,32 +61,52 @@ public class ListManagementServlet extends HttpServlet {
 			@SuppressWarnings("unchecked")
 			ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) restaurantAttr;
 			
-			//Initialize list depending on listParam input
+			//Initialize target list depending on listParam input
 			if (listParam.equals("FAV")) {
 				list = userListContainer.getFavorites();
-				listInit = true;
 			}
 			else if (listParam.equals("DNS")) {
 				list = userListContainer.getNoShow();
-				listInit = true;
 			}
 			else if (listParam.equals("XPL")) {
 				list = userListContainer.getExplore();
-				listInit = true;
 			}
 			
-			if (listInit) {
-				//display is the only operation that doesn't use id parameter
+			//If performing a movement operation, initialize the source list
+			if (operation.equals("moveRecipe") || operation.equals("moveRestaurant")) {
+				if (srcListParam != null) {
+					if (srcListParam.equals("FAV")) {
+						srcList = userListContainer.getFavorites();
+					}
+					else if (srcListParam.equals("DNS")) {
+						srcList = userListContainer.getNoShow();
+					}
+					else if (srcListParam.equals("XPL")) {
+						srcList = userListContainer.getExplore();
+					}
+					else {
+						//unknown source list parameter
+						missingInfo = true;
+					}
+				}
+				else {
+					//missing source list parameter when required
+					missingInfo = true;
+				}
+			}
+			
+			//Check if lists properly initialized
+			if (list != null && !missingInfo) {
 				if (!operation.equals("display")) {
+					//ID is required for every operation except display
 					if (id != null) {
 						long itemID = Long.parseLong(id);
 						
+						//Modify list depending on operation
 						if (operation.equals("addRecipe")) {
 							Recipe r = getRecipeByID(recipes, itemID);
 							if (r != null) {
-								if (!list.containsRecipe(r)) {
-									list.addRecipe(r);
-								}
+								list.addRecipe(r);
 							}
 							else {
 								//results do not have desired recipe
@@ -93,12 +116,36 @@ public class ListManagementServlet extends HttpServlet {
 						else if (operation.equals("addRestaurant")) {
 							Restaurant r = getRestaurantByID(restaurants, itemID);
 							if (r != null) {
-								if (!list.containsRestaurant(r)) {
-									list.addRestaurant(r);
-								}
+								list.addRestaurant(r);
 							}
 							else {
 								//results do not have desired restaurant
+								missingInfo = true;
+							}
+						}
+						else if (operation.equals("removeRecipe")) {
+							list.removeRecipeByID(itemID);
+						}
+						else if (operation.equals("removeRestaurant")) {
+							list.removeRestaurantByID(itemID);
+						}
+						else if (operation.equals("moveRecipe")) {
+							Recipe r = getRecipeByID(recipes, itemID);
+							if (r != null) {
+								srcList.removeRecipeByID(itemID);
+								list.addRecipe(r);
+							}
+							else {
+								missingInfo = true;
+							}
+						}
+						else if (operation.equals("moveRestaurant")) {
+							Restaurant r = getRestaurantByID(restaurants, itemID);
+							if (r != null) {
+								srcList.removeRestaurantByID(itemID);
+								list.addRestaurant(r);
+							}
+							else {
 								missingInfo = true;
 							}
 						}

@@ -21,14 +21,19 @@ public class Restaurant extends Item {
 		this.name = name;
 		this.siteURL = websiteURL;
 		this.imageURL = imgURL;
+		//Generate random phone when API doesn't provide one
 		this.phoneNumber = phoneNumber.trim().equals("") ? randomPhone() : phoneNumber;
-		this.location = location;						//Helper class
-		this.rating = (short)((ratingOf5 / 5) * 100);		//Get rating as percentage
-		//this.priceRange = ("$").repeat(priceRange);	//1-3 dollar signs to represent price
-		double distanceFromTT = distance(34.020560, location.getLatitude(), -118.285427, location.getLongitude());
+		//Helper class
+		this.location = location;
+		//Get rating as percentage
+		this.rating = (short)((ratingOf5 / 5) * 100);
+		//1-4 dollar signs to represent price
+		this.priceRange = new String(new char[priceRange]).replace('\0', '$');
 		//28.6 mph average driving speed in LA --> 718.8403 meters per minute
+		double distanceFromTT = distance(34.020560, location.getLatitude(), -118.285427, location.getLongitude());
 		int minutes = (int)((distanceFromTT/718.8403) * 1.5);
 		this.minutesFromTT = minutes > 0 ? minutes : 1;
+		//generate URL that links to Google Maps directions
 		createDirectionsURL();
 		setType("restaurant");
 	}
@@ -66,7 +71,7 @@ public class Restaurant extends Item {
 		int areaCodeRand = ThreadLocalRandom.current().nextInt(0, areaCodes.size());
 		int threeDigitRand = ThreadLocalRandom.current().nextInt(100, 1000);
 		int fourDigitRand = ThreadLocalRandom.current().nextInt(1000, 10000);
-		return areaCodes.get(areaCodeRand) + " " + String.valueOf(threeDigitRand) + "-" + String.valueOf(fourDigitRand);
+		return areaCodes.get(areaCodeRand) + " " + threeDigitRand + "-" + fourDigitRand;
 	}
 	public long getID() {
 		return ID;

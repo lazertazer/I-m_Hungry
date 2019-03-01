@@ -52,13 +52,11 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			//Set up connection
 			HttpURLConnection con = (HttpURLConnection) (new URL(Spoonacular_url)).openConnection();
 			con.setRequestMethod("GET");
-			con.setRequestProperty("X-RapidAPI-Key", "a6e9c161aemshe8323f29dd7c0c8p1e1d3fjsn801538af19ff");
+			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY");
 			
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			
-			//Get the the list of restaurant IDs from the user lists that affect search results
-			ArrayList<Long> favoriteIDs = userLists.getFavorites().getRecipeIDs();
 			ArrayList<Long> doNotShowIDs = userLists.getNoShow().getRecipeIDs();
 			
 			//Populate array of Recipe helper class
@@ -135,28 +133,6 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 									minutes, servings, image, score, instructions, ingredients);
 				recipes.add(r);
 			}
-			//Sort results using custom comparator
-			//Favorites go to the beginning, otherwise sort by prep time
-			//Recipes with no prep time are compared using their total time
-			Collections.sort(recipes, new Comparator<Recipe>() {
-				@Override
-				public int compare(Recipe lhs, Recipe rhs) {
-					if (favoriteIDs.contains(lhs.getID())) {
-						return -1;
-					}
-					else if (favoriteIDs.contains(rhs.getID())) {
-						return 1;
-					}
-					
-					int leftTime = lhs.getPrepMinutes();
-					leftTime = leftTime != 0 ? leftTime : lhs.getTotalMinutes();
-
-					int rightTime = rhs.getPrepMinutes();
-					rightTime = rightTime != 0 ? rightTime : rhs.getTotalMinutes();
-					
-					return leftTime < rightTime ? -1 : 1;
-				}
-			});
 			//Include recipes in request for display on results.jsp, and save to session
 			request.setAttribute("recipeResults", recipes);
 			request.getSession().setAttribute("recipeResults", recipes);

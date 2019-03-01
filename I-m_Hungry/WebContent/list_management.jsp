@@ -13,7 +13,10 @@
 		<table id="dropdownButtons">
 			<tr>
 				<td>
-					<button type="button" onclick="location.href='results.jsp'">Back to Results</button>
+					<form action="./Search" method="get">
+						<button type="submit">Back to Results</button>
+						<input type="hidden" style="display: none" name="back" value="true">
+					</form>
 				</td>
 			</tr>
 			<tr>

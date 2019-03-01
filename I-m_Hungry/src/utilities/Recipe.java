@@ -25,6 +25,7 @@ public class Recipe extends Item {
 		this.servings = servings;
 		this.imageURL = imageURL;
 		this.score = score;
+		//Helper classes contain instructions and ingredients
 		this.instructions = inst;
 		this.ingredients = ingr;
 		setType("recipe");

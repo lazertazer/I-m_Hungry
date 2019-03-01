@@ -1,6 +1,9 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +20,8 @@ import threads.CollageThread;
 import threads.RecipeSearchThread;
 import threads.RestaurantSearchThread;
 import utilities.ListContainer;
+import utilities.Recipe;
+import utilities.Restaurant;
 
 /**
  * INPUT: User search query and desired number of results
@@ -88,6 +93,58 @@ public class SearchServlet extends HttpServlet {
 				//Wait for all threads to finish
 				boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
 			} catch (InterruptedException ie) {}	
+		}
+		//Get the the list of results and result IDs from the user lists that affect search results
+		ArrayList<Long> favoriteRecipeIDs = userListContainer.getFavorites().getRecipeIDs();
+		ArrayList<Long> doNotShowRecipeIDs = userListContainer.getNoShow().getRecipeIDs();
+		@SuppressWarnings("unchecked")
+		ArrayList<Recipe> recipes = (ArrayList<Recipe>) request.getAttribute("recipeResults");
+		
+		ArrayList<Long> favoriteRestaurantIDs = userListContainer.getFavorites().getRestaurantIDs();
+		ArrayList<Long> doNotShowRestaurantIDs = userListContainer.getNoShow().getRestaurantIDs();
+		@SuppressWarnings("unchecked")
+		ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) request.getAttribute("restaurantResults");
+		
+		//Sort recipes using custom comparator
+		//Favorites go to the beginning, otherwise sort by prep time
+		//Recipes with no prep time are compared using their total time
+		Collections.sort(recipes, new Comparator<Recipe>() {
+			@Override
+			public int compare(Recipe lhs, Recipe rhs) {
+				if (favoriteRecipeIDs.contains(lhs.getID())) {
+					return -1;
+				}
+				else if (favoriteRecipeIDs.contains(rhs.getID())) {
+					return 1;
+				}
+				
+				int leftTime = lhs.getPrepMinutes();
+				leftTime = leftTime != 0 ? leftTime : lhs.getTotalMinutes();
+
+				int rightTime = rhs.getPrepMinutes();
+				rightTime = rightTime != 0 ? rightTime : rhs.getTotalMinutes();
+				
+				return leftTime < rightTime ? -1 : 1;
+			}
+		});
+		
+		//Remove do not show recipes
+		//TODO concurrent modification exception??
+		for (Recipe r : recipes) {
+			if (doNotShowRecipeIDs.contains(r.getID())) {
+				recipes.remove(r);
+			}
+		}
+		
+		//Prioritize favorite restaurants and remove do not shows
+		for (Restaurant r : restaurants) {
+			if (favoriteRestaurantIDs.contains(r.getID())) {
+				restaurants.remove(r);
+				restaurants.add(0, r);
+			}
+			if (doNotShowRestaurantIDs.contains(r.getID())) {
+				restaurants.remove(r);
+			}
 		}
 		//Forward to results.jsp
 		RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");

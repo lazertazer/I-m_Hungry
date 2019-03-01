@@ -45,8 +45,6 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			
-			//Get the the list of restaurant IDs from the user lists that affect search results
-			ArrayList<Long> favoriteIDs = userLists.getFavorites().getRestaurantIDs();
 			ArrayList<Long> doNotShowIDs = userLists.getNoShow().getRestaurantIDs();
 			
 			//Populate array of Restaurant helper class
@@ -66,7 +64,7 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 				if (imgURL.equals("")) {
 					imgURL = obj.get("thumb").getAsString();
 				}
-				//TODO phone numbers are not included with the free API key :(
+
 				String phoneNumber = "";
 				if (obj.has("phone_numbers")) {
 					phoneNumber = obj.get("phone_numbers").getAsString();
@@ -84,16 +82,9 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 				float rating = obj.get("user_rating").getAsJsonObject().get("aggregate_rating").getAsFloat();
 				short priceRange = obj.get("price_range").getAsShort();
 				
+				//create restaurant and add to results
 				Restaurant r = new Restaurant(ID, name, websiteURL, imgURL, phoneNumber, location, rating, priceRange);
-				
-				//If restaurant is in favorites, add to the beginning
-				//else, add to the end
-				if (favoriteIDs.contains(ID)) {
-					restaurants.add(0, r);
-				}
-				else {
-					restaurants.add(r);	
-				}
+				restaurants.add(r);
 			}
 			//Include restaurants in request for display on results.jsp, and save to session
 			request.setAttribute("restaurantResults", restaurants);

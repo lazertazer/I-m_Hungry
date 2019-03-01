@@ -54,9 +54,6 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			con.setRequestMethod("GET");
 			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY");
 			
-			con.setConnectTimeout(5000);
-			con.setReadTimeout(5000);
-			
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);
 			

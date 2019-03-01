@@ -52,7 +52,7 @@ public class RecipeSearchThread extends APIcall implements Runnable {
 			//Set up connection
 			HttpURLConnection con = (HttpURLConnection) (new URL(Spoonacular_url)).openConnection();
 			con.setRequestMethod("GET");
-			con.setRequestProperty("X-RapidAPI-Key", "YOUR SPOONACULAR API KEY");
+			con.setRequestProperty("X-RapidAPI-Key", "YOUR API KEY");
 			
 			//Parse response using superclass method
 			JsonObject body = readAndParseJSON(con);

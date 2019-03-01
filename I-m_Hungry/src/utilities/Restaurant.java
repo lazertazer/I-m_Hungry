@@ -3,7 +3,7 @@ package utilities;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Restaurant {
+public class Restaurant extends Item {
 	private long ID;
 	private String name;
 	private String siteURL;
@@ -24,12 +24,13 @@ public class Restaurant {
 		this.phoneNumber = phoneNumber.trim().equals("") ? randomPhone() : phoneNumber;
 		this.location = location;						//Helper class
 		this.rating = (short)((ratingOf5 / 5) * 100);		//Get rating as percentage
-		this.priceRange = ("$").repeat(priceRange);	//1-3 dollar signs to represent price
+		//this.priceRange = ("$").repeat(priceRange);	//1-3 dollar signs to represent price
 		double distanceFromTT = distance(34.020560, location.getLatitude(), -118.285427, location.getLongitude());
 		//28.6 mph average driving speed in LA --> 718.8403 meters per minute
 		int minutes = (int)((distanceFromTT/718.8403) * 1.5);
 		this.minutesFromTT = minutes > 0 ? minutes : 1;
 		createDirectionsURL();
+		setType("restaurant");
 	}
 	/**
 	 * Calculate distance between two points in latitude and longitude.

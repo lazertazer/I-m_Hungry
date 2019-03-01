@@ -1,13 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<title>List Management</title>
 		<link rel="stylesheet" type="text/css" href="./CSS/list_management.css">
-		
-
+		<script src="./JS/forwardToInfoPage.js"></script>
 	</head>
 	<body>
 		
@@ -48,13 +47,13 @@
 		<form id="listItemForm" method="get">
 			<table id="listItemTable">
 				<!-- TODO: add to loop through items using Lazlo's variables -->
-				<c:forEach items="${currentList}" var="result" varStatus="loop">
+				<c:forEach items="${currentList.getAllItems()}" var="result" varStatus="loop">
 					<c:choose>
-						<c:when test="${result.class.simpleName == 'Restaurant'}">
+						<c:when test="${result.getType() == 'restaurant'}">
 							<tr>
 								<td class="listItemCell"
 								style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}"
-								onclick="forwardToInfoPage('restaurantForm', './RestaurantInfo', ${result.getID()})">
+								onclick="forwardToInfoPage('listItemForm', './RestaurantInfo', ${result.getID()})">
 									<table class="listItemCellTable">
 										<tr>
 											<td class="listItemName">
@@ -88,7 +87,7 @@
 							<tr>
 								<td class="listItemCell"
 								style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}"
-								onclick="forwardToInfoPage('recipeForm', './RecipeInfo', ${result.getID()})">
+								onclick="forwardToInfoPage('listItemForm', './RecipeInfo', ${result.getID()})">
 									<table class="listItemCellTable">
 										<tr>
 											<td class="listItemName">
@@ -122,7 +121,10 @@
 							</tr>
 						</c:otherwise>
 					</c:choose>
+				<!-- TODO: Add buttond -->
+				
 				</c:forEach>
+				
 			</table>
 		</form>
 		

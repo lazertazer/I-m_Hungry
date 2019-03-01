@@ -41,6 +41,16 @@ public class UserList {
 		}
 		return recipeIDs;
 	}
+	public ArrayList<Item> getAllItems() {
+		ArrayList<Item> items = new ArrayList<Item>();
+		for (Recipe r : recipes) {
+			items.add(r);
+		}
+		for (Restaurant r : restaurants) {
+			items.add(r);
+		}
+		return items;
+	}
 	public void addRestaurant(Restaurant r) {
 		restaurants.add(r);
 	}

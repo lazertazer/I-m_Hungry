@@ -47,4 +47,20 @@ public class UserList {
 	public void addRecipe(Recipe r) {
 		recipes.add(r);
 	}
+	public boolean containsRecipe(Recipe recipe) {
+		for (Recipe r : recipes) {
+			if (r.getID() == recipe.getID()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean containsRestaurant(Restaurant restaurant) {
+		for (Restaurant r : restaurants) {
+			if (r.getID() == restaurant.getID()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

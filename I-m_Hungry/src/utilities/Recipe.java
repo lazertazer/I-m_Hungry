@@ -1,6 +1,6 @@
 package utilities;
 
-public class Recipe {
+public class Recipe extends Item {
 	private long ID;
 	private String name;
 	private String sourceURL;
@@ -27,6 +27,7 @@ public class Recipe {
 		this.score = score;
 		this.instructions = inst;
 		this.ingredients = ingr;
+		setType("recipe");
 	}
 
 	public long getID() {

@@ -60,37 +60,43 @@ public class SearchServlet extends HttpServlet {
 			//Get parameter inputs
 			String query = request.getParameter("q");
 			int numResults = Integer.parseInt(request.getParameter("num"));
-			
-			//TODO remove this / handle input better
-			if (numResults > 15) {
-				return;
+			if(query.length() == 0 || numResults <= 1) {
+				RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/search.jsp");
+				dispatch.forward(request, response);
 			}
-			
-			request.setAttribute("query", query);
-			session.setAttribute("query", query);
-			
-			//split query into an array of words
-			String[] queryArray = (query).split("[ \t&?+_\\/-]");
-			
-			//Concatenate search query terms with '+'
-			String parameters = queryArray[0];
-			for (int i = 1; i < queryArray.length; i++) {
-				parameters += "+" + queryArray[i];
+			else {
+				
+				//TODO remove this / handle input better
+				if (numResults > 15) {
+					return;
+				}
+				
+				request.setAttribute("query", query);
+				session.setAttribute("query", query);
+				
+				//split query into an array of words
+				String[] queryArray = (query).split("[ \t&?+_\\/-]");
+				
+				//Concatenate search query terms with '+'
+				String parameters = queryArray[0];
+				for (int i = 1; i < queryArray.length; i++) {
+					parameters += "+" + queryArray[i];
+				}
+				
+				//Pass user input and lists to each thread to make the API calls and set request attributes
+				ExecutorService es = Executors.newCachedThreadPool();
+				es.execute(new CollageThread(request, parameters));
+				es.execute(new RestaurantSearchThread(request, parameters, numResults, userListContainer));
+				es.execute(new RecipeSearchThread(request, parameters, numResults, userListContainer));
+				es.shutdown();
+				try {
+					//Wait for all threads to finish
+					boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
+				} catch (InterruptedException ie) {}	
 			}
-			
-			//Pass user input and lists to each thread to make the API calls and set request attributes
-			ExecutorService es = Executors.newCachedThreadPool();
-			es.execute(new CollageThread(request, parameters));
-			es.execute(new RestaurantSearchThread(request, parameters, numResults, userListContainer));
-			es.execute(new RecipeSearchThread(request, parameters, numResults, userListContainer));
-			es.shutdown();
-			try {
-				//Wait for all threads to finish
-				boolean finished = es.awaitTermination(20, TimeUnit.SECONDS);
-			} catch (InterruptedException ie) {}	
+			//Forward to results.jsp
+			RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");
+			dispatch.forward(request, response);
 		}
-		//Forward to results.jsp
-		RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");
-		dispatch.forward(request, response);
 	}
 }

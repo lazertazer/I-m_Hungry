@@ -1,6 +1,9 @@
 package utilities;
 
-public class Recipe extends Item {
+import java.io.Serializable;
+
+public class Recipe extends Item implements Serializable {
+	private static final long serialVersionUID = 4441727804406141516L;
 	private long ID;
 	private String name;
 	private String sourceURL;

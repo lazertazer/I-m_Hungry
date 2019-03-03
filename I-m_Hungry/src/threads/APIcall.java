@@ -11,8 +11,8 @@ import com.google.gson.stream.JsonReader;
 
 public abstract class APIcall {
 	public JsonObject readAndParseJSON(HttpURLConnection con) {
-		con.setConnectTimeout(8000);
-		con.setReadTimeout(8000);
+		con.setConnectTimeout(10000);
+		con.setReadTimeout(10000);
 		JsonObject body = null;
 		try {
 			//Use Gson to parse and return the JSON response

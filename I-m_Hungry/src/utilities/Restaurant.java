@@ -2,8 +2,10 @@ package utilities;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.io.Serializable;
 
-public class Restaurant extends Item {
+public class Restaurant extends Item implements Serializable {
+	private static final long serialVersionUID = -2092992039469986893L;
 	private long ID;
 	private String name;
 	private String siteURL;

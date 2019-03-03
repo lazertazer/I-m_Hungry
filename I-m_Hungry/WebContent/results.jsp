@@ -37,7 +37,7 @@
 			</tr>
 			<tr>
 				<td>
-					<button type="button" onclick="location.href='search_page.html'">Return to Search</button>
+					<button type="button" onclick="location.href='search.jsp'">Return to Search</button>
 				</td>
 			</tr>
 		</table>

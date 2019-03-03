@@ -31,7 +31,7 @@
 			<div class="tooltip"><input class="numberfood" type="number" name="num" step="1" value="5"><span class="tooltiptext">Number of items to show in results</span></div>
 			<br/>
 			<br/>
-			<input type="submit" name="Submit" value="Submit"/>
+			<input type="submit"/>
 		</form>
 	</body>
 </html>

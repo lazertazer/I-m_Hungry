@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -133,25 +134,32 @@ public class SearchServlet extends HttpServlet {
 				return leftTime < rightTime ? -1 : 1;
 			}
 		});
-		
 		//Remove do not show recipes
-		//TODO concurrent modification exception??
-		for (Recipe r : recipes) {
-			if (doNotShowRecipeIDs.contains(r.getID())) {
-				recipes.remove(r);
+		ListIterator<Recipe> it_recipe = recipes.listIterator();
+		while (it_recipe.hasNext()) {
+			if (doNotShowRecipeIDs.contains(it_recipe.next().getID())) {
+				it_recipe.remove();
 			}
 		}
-		
-		//Prioritize favorite restaurants and remove do not shows
-		for (Restaurant r : restaurants) {
+		//Remove do not show restaurants
+		ListIterator<Restaurant> it_restaurant = restaurants.listIterator();
+		while (it_restaurant.hasNext()) {
+			if (doNotShowRestaurantIDs.contains(it_restaurant.next().getID())) {
+				it_restaurant.remove();
+			}
+		}
+		//Prioritize favorite restaurants
+		for (int i = 0; i < restaurants.size(); i++) {
+			Restaurant r = restaurants.get(i);
 			if (favoriteRestaurantIDs.contains(r.getID())) {
-				restaurants.remove(r);
+				restaurants.remove(i);
 				restaurants.add(0, r);
 			}
-			if (doNotShowRestaurantIDs.contains(r.getID())) {
-				restaurants.remove(r);
-			}
 		}
+		request.setAttribute("restaurantResults", restaurants);
+		session.setAttribute("restaurantResults", restaurants);
+		request.setAttribute("recipeResults", recipes);
+		session.setAttribute("recipeResults", recipes);
 		//Forward to results.jsp
 		RequestDispatcher dispatch = getServletContext().getRequestDispatcher("/results.jsp");
 		dispatch.forward(request, response);

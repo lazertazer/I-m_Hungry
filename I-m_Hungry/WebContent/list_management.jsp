@@ -21,7 +21,7 @@
 			</tr>
 			<tr>
 				<td>
-					<button type="button" onclick="location.href='search_page.html'">Back to Search</button>
+					<button type="button" onclick="location.href='search.jsp'">Back to Search</button>
 				</td>
 			</tr>
 			<tr>
@@ -36,7 +36,7 @@
 			</tr>
 			<tr>
 				<td>
-					<form action="./ListManagementServlet" id="dropdown" method="get">
+					<form action="./UserLists" id="dropdown" method="get">
 						<button type="submit">Manage List</button>
 						<input type="hidden" style="display: none" name="operation" value="display">
 					</form>

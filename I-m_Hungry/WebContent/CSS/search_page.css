@@ -1,1 +1,79 @@
 @charset "ISO-8859-1";
+
+/* Tooltip container */
+
+h1{
+	font-family: arial;
+    text-align: center;
+    font-size: 3em;
+    margin-top: 30vmin;
+    /* text-decoration: none; */
+    font-style: normal;
+    font-weight: normal;
+}
+html{
+	background-color: "whitesmoke";
+}
+
+form{
+	text-align: center;
+}
+.foodsearch{
+	font-size: 1em;
+    width: 35vmin;
+}
+.searchicon{
+	height: 15vmin;
+}
+.numberfood{
+	font-size: 1em;
+    width: 10vmin;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltiptext{
+	font-size: 1em;
+    font-family: arial;
+    width: 30vmin;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+
+  /* Fade in tooltip */
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

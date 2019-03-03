@@ -1,11 +1,20 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import utilities.ListContainer;
+import utilities.Recipe;
+import utilities.Restaurant;
+import utilities.UserList;
 
 /**
  *	TODO put description
@@ -19,6 +28,172 @@ public class ListManagementServlet extends HttpServlet {
     }
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//Get user lists and search results from session
+		HttpSession session = request.getSession();
+		Object recipeAttr = session.getAttribute("recipeResults");
+		Object restaurantAttr = session.getAttribute("restaurantResults");
+		Object listContainerAttr = session.getAttribute("userListContainer");
 		
+		//listParam determines which list is being affected
+		String listParam = request.getParameter("list");
+		
+		//operation determines what to do with the list
+		String operation = request.getParameter("operation");
+		
+		//id specifies a recipe or result (depends on operation)
+		String id = request.getParameter("id");
+		
+		//srclist only used when moving an item between lists
+		String srcListParam = request.getParameter("srclist");
+		
+		UserList list = null;
+		UserList srcList = null;
+		boolean missingInfo = false;
+		RequestDispatcher dispatch;
+		
+		if (recipeAttr != null && restaurantAttr != null && listContainerAttr != null
+				&& listParam != null && operation != null) {
+			
+			//Cast session variables now that we know they aren't null
+			ListContainer userListContainer = (ListContainer) listContainerAttr;
+			@SuppressWarnings("unchecked")
+			ArrayList<Recipe> recipes = (ArrayList<Recipe>) recipeAttr;
+			@SuppressWarnings("unchecked")
+			ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) restaurantAttr;
+			
+			//Initialize target list depending on listParam input
+			if (listParam.equals("FAV")) {
+				list = userListContainer.getFavorites();
+			}
+			else if (listParam.equals("DNS")) {
+				list = userListContainer.getNoShow();
+			}
+			else if (listParam.equals("XPL")) {
+				list = userListContainer.getExplore();
+			}
+			
+			//If performing a movement operation, initialize the source list
+			if (operation.equals("moveRecipe") || operation.equals("moveRestaurant")) {
+				if (srcListParam != null) {
+					if (srcListParam.equals("FAV")) {
+						srcList = userListContainer.getFavorites();
+					}
+					else if (srcListParam.equals("DNS")) {
+						srcList = userListContainer.getNoShow();
+					}
+					else if (srcListParam.equals("XPL")) {
+						srcList = userListContainer.getExplore();
+					}
+					else {
+						//unknown source list parameter
+						missingInfo = true;
+					}
+				}
+				else {
+					//missing source list parameter when required
+					missingInfo = true;
+				}
+			}
+			
+			//Check if lists properly initialized
+			if (list != null && !missingInfo) {
+				if (!operation.equals("display")) {
+					//ID is required for every operation except display
+					if (id != null) {
+						long itemID = Long.parseLong(id);
+						
+						//Modify list depending on operation
+						if (operation.equals("addRecipe")) {
+							Recipe r = getRecipeByID(recipes, itemID);
+							if (r != null) {
+								list.addRecipe(r);
+							}
+							else {
+								//results do not have desired recipe
+								missingInfo = true;
+							}
+						}
+						else if (operation.equals("addRestaurant")) {
+							Restaurant r = getRestaurantByID(restaurants, itemID);
+							if (r != null) {
+								list.addRestaurant(r);
+							}
+							else {
+								//results do not have desired restaurant
+								missingInfo = true;
+							}
+						}
+						else if (operation.equals("removeRecipe")) {
+							list.removeRecipeByID(itemID);
+						}
+						else if (operation.equals("removeRestaurant")) {
+							list.removeRestaurantByID(itemID);
+						}
+						else if (operation.equals("moveRecipe")) {
+							Recipe r = getRecipeByID(recipes, itemID);
+							if (r != null) {
+								srcList.removeRecipeByID(itemID);
+								list.addRecipe(r);
+							}
+							else {
+								missingInfo = true;
+							}
+						}
+						else if (operation.equals("moveRestaurant")) {
+							Restaurant r = getRestaurantByID(restaurants, itemID);
+							if (r != null) {
+								srcList.removeRestaurantByID(itemID);
+								list.addRestaurant(r);
+							}
+							else {
+								missingInfo = true;
+							}
+						}
+						else {
+							//unknown operation
+							missingInfo = true;
+						}
+					}
+					else {
+						//id is necessary but null
+						missingInfo = true;
+					}
+				}
+			}
+			else {
+				//list not initialized
+				missingInfo = true;
+			}
+		}
+		else {
+			//required info was null
+			missingInfo = true;
+		}
+		
+		//Forward to list_management page if successful, else to search page
+		if (!missingInfo) {
+			request.setAttribute("currentList", list);
+			dispatch = getServletContext().getRequestDispatcher("/list_management.jsp");
+		}
+		else {
+			dispatch = getServletContext().getRequestDispatcher("/search_page.html");
+		}
+		dispatch.forward(request, response);
+	}
+	private Recipe getRecipeByID(ArrayList<Recipe> recipes, long recipeID) {
+		for (Recipe r : recipes) {
+			if (r.getID() == recipeID) {
+				return r;
+			}
+		}
+		return null;
+	}
+	private Restaurant getRestaurantByID(ArrayList<Restaurant> restaurants, long restaurantID) {
+		for (Restaurant r : restaurants) {
+			if (r.getID() == restaurantID) {
+				return r;
+			}
+		}
+		return null;
 	}
 }

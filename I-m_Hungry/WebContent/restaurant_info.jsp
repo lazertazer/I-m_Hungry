@@ -37,7 +37,7 @@
 			</tr>
 			<tr>
 				<td>
-					<form action="./ListManagementServlet" id="dropdown" method="get">
+					<form action="./UserLists" id="dropdown" method="get">
 						<button type="submit">Add to List</button>
 						<input type="hidden" style="display: none" name="operation" value="addRestaurant">
 						<input type="hidden" style="display: none" name="id" value="${restaurant.getID()}">

@@ -3,10 +3,12 @@ body {
 	padding-left: 2vw;
 	font-family: arial;
 }
-button, select, td{
+button, select {
+	font-size: 1em;
+}
+td {
 	font-size: 1em;
 	font-family: arial;
-	
 }
 
 .star-ratings {

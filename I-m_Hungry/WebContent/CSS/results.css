@@ -4,10 +4,8 @@ body {
 	font-family: arial;
 }
 
-button {
+button, select {
 	font-size: 1em;
-	font-family: arial;
-	
 }
 td {
 	font-family: arial;
@@ -112,6 +110,9 @@ h2 {
 .restaurantName {
 	font-weight: bold;
 }
+.driving {
+	width: 30%;
+}
 
 #recipeTable {
 	float: right;
@@ -136,4 +137,7 @@ h2 {
 }
 .recipeName {
 	font-weight: bold;
+}
+.preptime {
+	width: 40%;
 }

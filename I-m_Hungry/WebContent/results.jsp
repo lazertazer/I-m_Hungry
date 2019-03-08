@@ -10,10 +10,12 @@
 	</head>
 	<body>
 		<div id="collage">
-			<c:forEach items="${images}" var="image">
-				<img class="image" src="${image}" />
-			</c:forEach>
-			<script src="./JS/scatterCollage.js"></script>
+			<div id = "innerCollage">
+				<c:forEach items="${images}" var="image">
+					<img class="image" src="${image}" />
+				</c:forEach>
+				<script src="./JS/scatterCollage.js"></script>
+			</div>
 		</div>
 		
 		<table id="dropdownButtons">
@@ -30,8 +32,8 @@
 			<tr>
 				<td>
 					<form action="./UserLists" id="dropdown" method="get">
-						<button type="submit">Manage List</button>
 						<input type="hidden" style="display: none" name="operation" value="display">
+						<button type="submit">Manage List</button>
 					</form>
 				</td>
 			</tr>
@@ -55,15 +57,15 @@
 				</thead>
 				<c:forEach items="${restaurantResults}" var="result" varStatus="loop">
 					<tr>
-						<td class="restaurantCell"
+						<td class="restaurantCell" id="${result.getID()}"
 						style="background-color: ${loop.index % 2 eq 0 ? '#cccccc' : '#b3b3b3'}"
 						onclick="forwardToInfoPage('restaurantForm', './RestaurantInfo', ${result.getID()})">
 							<table class="restaurantCellTable">
 								<tr>
-									<td class="restaurantName">
+									<td class="restaurantName" colspan="2">
 										${result.getName()}
 									</td>
-									<td colspan="2">
+									<td>
 										<div class="star-ratings">
 											<div class="star-top" style="width: ${result.getRating()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 											<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
@@ -71,14 +73,14 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td class="driving">
 										Driving time:<br>
 										${result.getMinutesFromTT()} ${result.getMinutesFromTT() eq 1 ? 'minute' : 'minutes'}
 									</td>
-									<td>
+									<td class='address'>
 										${result.getLocation().getAddress()}
 									</td>
-									<td style="text-align: right">
+									<td class="price" style="text-align: right">
 										${result.getPriceRange()}
 									</td>
 								</tr>
@@ -105,24 +107,23 @@
 						onclick="forwardToInfoPage('recipeForm', './RecipeInfo', ${result.getID()})">
 							<table class="recipeCellTable">
 								<tr>
-									<td class="recipeName">
+									<td class="recipeName" colspan="2">
 										${result.getName()}
 									</td>
-									<td colspan="2">
+									<td>
 										<div class="star-ratings">
-											<!-- TODO figure out what to do instead of stars -->
 											<div class="star-top" style="width: ${result.getScore()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 											<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td class="preptime">
 										${result.useTotalMinutes() ?
 											("Ready in ".concat(result.getTotalMinutes()).concat(" minutes"))
 											: ("Prep time: ".concat(result.getPrepMinutes()).concat(" minutes"))}
 									</td>
-									<td>
+									<td class="cooktime">
 										${result.useTotalMinutes() ?
 											(''.concat(result.getServings()).concat(" servings"))
 											: ("Cook time: ".concat(result.getCookMinutes()).concat(" minutes"))}

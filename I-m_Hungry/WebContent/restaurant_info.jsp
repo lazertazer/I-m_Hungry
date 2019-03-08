@@ -55,8 +55,8 @@
 				<td class="firstTD">
 					Address:
 				</td>
-				<td>
-					<a href="${restaurant.getDirectionsURL()}" target="_blank">
+				<td class="address">
+					<a id="address" href="${restaurant.getDirectionsURL()}" target="_blank">
 						${restaurant.getLocation().getAddress()}
 					</a>
 				</td>
@@ -65,13 +65,13 @@
 				<td class="firstTD">
 					Phone Number:
 				</td>
-				<td>
+				<td class="phoneNumber">
 					${restaurant.getPhoneNumber()}
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2" id="site">
-					<a href="${restaurant.getURL()}" target="_blank">Restaurant website and additional information</a>
+					<a id="site_link" href="${restaurant.getURL()}" target="_blank">${restaurant.getURL()}</a>
 				</td>
 			</tr>
 		</table>

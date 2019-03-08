@@ -7,23 +7,10 @@
 		<title>List Management</title>
 		<link rel="stylesheet" type="text/css" href="./CSS/list_management.css">
 		<script src="./JS/forwardToInfoPage.js"></script>
+		<script src="./JS/moveSubmit.js"></script>
 	</head>
 	<body>
-		
 		<table id="dropdownButtons">
-			<tr>
-				<td>
-					<form action="./Search" method="get">
-						<button type="submit">Back to Results</button>
-						<input type="hidden" style="display: none" name="back" value="true">
-					</form>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<button type="button" onclick="location.href='search.jsp'">Back to Search</button>
-				</td>
-			</tr>
 			<tr>
 				<td>
 					<select name="list" form="dropdown" required>
@@ -42,14 +29,63 @@
 					</form>
 				</td>
 			</tr>
-			
+			<tr>
+				<td>
+					<form action="./Search" method="get">
+						<button type="submit">Back to Results</button>
+						<input type="hidden" style="display: none" name="back" value="true">
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button type="button" onclick="location.href='search.jsp'">Back to Search</button>
+				</td>
+			</tr>
 		</table>
 		
-		<h1>${currentList.getListName()}</h1> 
+		<h1>${currentList.getListName()}</h1>
+		
+		<form id="remResForm" action="./UserLists" method="get">
+			<input type="hidden" style="display: none" name="operation" value="removeRestaurant">
+			<input type="hidden" style="display: none" name="list" value="${currentList.getListAcronym()}">
+		</form>
+		<form id="remRecForm" action="./UserLists" method="get">
+			<input type="hidden" style="display: none" name="operation" value="removeRecipe">
+			<input type="hidden" style="display: none" name="list" value="${currentList.getListAcronym()}">
+		</form>
+		<form id="movResForm" action="./UserLists" method="get">
+			<input type="hidden" style="display: none" name="operation" value="moveRestaurant">
+			<input type="hidden" style="display: none" name="list" value="${currentList.getListAcronym()}">
+		</form>
+		<form id="movRecForm" action="./UserLists" method="get">
+			<input type="hidden" style="display: none" name="operation" value="moveRecipe">
+			<input type="hidden" style="display: none" name="list" value="${currentList.getListAcronym()}">
+		</form>
+		
+		<c:choose>
+			<c:when test="${currentList.getListAcronym() == 'FAV'}">
+				<c:set var="movList1Acr" value="DNS" />
+				<c:set var="movList1Name" value="Do Not Show" />
+				<c:set var="movList2Acr" value="XPL" />
+				<c:set var="movList2Name" value="To Explore" />
+			</c:when>
+			<c:when test="${currentList.getListAcronym() == 'DNS'}">
+				<c:set var="movList1Acr" value="FAV" />
+				<c:set var="movList1Name" value="Favorites" />
+				<c:set var="movList2Acr" value="XPL" />
+				<c:set var="movList2Name" value="To Explore" />
+			</c:when>
+			<c:when test="${currentList.getListAcronym() == 'XPL'}">
+				<c:set var="movList1Acr" value="FAV" />
+				<c:set var="movList1Name" value="Favorites" />
+				<c:set var="movList2Acr" value="DNS" />
+				<c:set var="movList2Name" value="Do Not Show" />
+			</c:when>
+		</c:choose>
 		
 		<form id="listItemForm" method="get">
 			<table id="listItemTable">
-				<!-- TODO: add to loop through items using Lazlo's variables -->
 				<c:forEach items="${currentList.getAllItems()}" var="result" varStatus="loop">
 					<c:choose>
 						<c:when test="${result.getType() == 'restaurant'}">
@@ -59,10 +95,10 @@
 								onclick="forwardToInfoPage('listItemForm', './RestaurantInfo', ${result.getID()})">
 									<table class="listItemCellTable">
 										<tr>
-											<td class="listItemName">
+											<td class="listItemName" colspan="2">
 												${result.getName()}
 											</td>
-											<td colspan="2">
+											<td>
 												<div class="star-ratings">
 													<div class="star-top" style="width: ${result.getRating()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 													<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
@@ -83,9 +119,24 @@
 										</tr>
 									</table>
 								</td>
+								<td>
+									<table class="actionButtons">
+										<tr>
+											<td>
+												<select form="movResForm" name="dstlist" onchange="moveSubmit(this, ${result.getID()});">
+													<option value="" disabled selected>Move to...</option>
+													<option value="${movList1Acr}">${movList1Name}</option>
+													<option value="${movList2Acr}">${movList2Name}</option>
+												</select>
+											</td>
+											<td>
+												<button form="remResForm" type="submit" name="id" value="${result.getID()}">Remove</button>									
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 						</c:when>
-					
 						<c:otherwise>
 							<tr>
 								<td class="listItemCell"
@@ -93,12 +144,11 @@
 								onclick="forwardToInfoPage('listItemForm', './RecipeInfo', ${result.getID()})">
 									<table class="listItemCellTable">
 										<tr>
-											<td class="listItemName">
+											<td class="listItemName" colspan="2">
 												${result.getName()}
 											</td>
-											<td colspan="2">
+											<td>
 												<div class="star-ratings">
-													<!-- TODO figure out what to do instead of stars -->
 													<div class="star-top" style="width: ${result.getScore()}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 													<div class="star-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
 												</div>
@@ -121,15 +171,27 @@
 										</tr>
 									</table>
 								</td>
+								<td>
+									<table class="actionButtons">
+										<tr>
+											<td>
+												<select form="movRecForm" name="dstlist" onchange="moveSubmit(this, ${result.getID()});">
+													<option value="" disabled selected>Move to...</option>
+													<option value="${movList1Acr}">${movList1Name}</option>
+													<option value="${movList2Acr}">${movList2Name}</option>
+												</select>
+											</td>
+											<td>
+												<button form="remRecForm" type="submit" name="id" value="${result.getID()}">Remove</button>									
+											</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 						</c:otherwise>
 					</c:choose>
-				<!-- TODO: Add buttond -->
-				
 				</c:forEach>
-				
 			</table>
 		</form>
-		
 	</body>
 </html>

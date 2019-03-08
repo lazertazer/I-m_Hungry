@@ -67,10 +67,6 @@
 				: ("Cook time:&emsp;".concat(cookMins).concat(" minutes"))}
 		</div>
 		
-		<div class="metaInfo">
-			${useTot ? "" : "Servings: &emsp; ".concat(serv)}
-		</div>
-		
 		<h2 id="ingredientHeader">Ingredients</h2>
 		<ul id="ingredientList">
 			<% boolean alt = false; %>

@@ -1,19 +1,25 @@
 package utilities;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class UserList {
 	private String listName;
+	private String listAcronym;
 	private ArrayList<Restaurant> restaurants;
 	private ArrayList<Recipe> recipes;
 	
-	public UserList(String listName) {
+	public UserList(String listName, String listAcronym) {
 		this.listName = listName;
+		this.listAcronym = listAcronym;
 		this.restaurants = new ArrayList<Restaurant>();
 		this.recipes = new ArrayList<Recipe>();
 	}
 	public String getListName() {
 		return listName;
+	}
+	public String getListAcronym() {
+		return listAcronym;
 	}
 	public ArrayList<Restaurant> getRestaurants() {
 		return restaurants;
@@ -74,16 +80,18 @@ public class UserList {
 		}
 	}
 	public void removeRestaurantByID(long ID) {
-		for (Restaurant r : restaurants) {
-			if (r.getID() == ID) {
-				restaurants.remove(r);
+		ListIterator<Restaurant> it = restaurants.listIterator();
+		while (it.hasNext()) {
+			if (it.next().getID() == ID) {
+				it.remove();
 			}
 		}
 	}
 	public void removeRecipeByID(long ID) {
-		for (Recipe r : recipes) {
-			if (r.getID() == ID) {
-				recipes.remove(r);
+		ListIterator<Recipe> it = recipes.listIterator();
+		while (it.hasNext()) {
+			if (it.next().getID() == ID) {
+				it.remove();
 			}
 		}
 	}

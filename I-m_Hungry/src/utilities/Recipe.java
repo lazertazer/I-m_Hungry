@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class Recipe extends Item implements Serializable {
 	private static final long serialVersionUID = 4441727804406141516L;
-	private long ID;
 	private String name;
 	private String sourceURL;
 	private int prepMinutes;
@@ -19,7 +18,7 @@ public class Recipe extends Item implements Serializable {
 	public Recipe(long ID, String name, String sourceURL, int prepMinutes,
 				int cookMinutes, int totalMinutes, short servings, String imageURL,
 				short score, RecipeInstructions inst, RecipeIngredients ingr) {
-		this.ID = ID;
+		setID(ID);
 		this.name = name;
 		this.sourceURL = sourceURL;
 		this.prepMinutes = prepMinutes;
@@ -33,16 +32,13 @@ public class Recipe extends Item implements Serializable {
 		this.ingredients = ingr;
 		setType("recipe");
 	}
-
-	public long getID() {
-		return ID;
-	}
 	public String getName() {
 		return name;
 	}
 	public String getSourceURL() {
 		return sourceURL;
 	}
+	//When API doesn't provide prep/cook minutes, total time is used
 	public boolean useTotalMinutes() {
 		return (prepMinutes == 0 || cookMinutes == 0);
 	}

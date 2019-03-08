@@ -1,12 +1,11 @@
 package utilities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.io.Serializable;
 
 public class Restaurant extends Item implements Serializable {
 	private static final long serialVersionUID = -2092992039469986893L;
-	private long ID;
 	private String name;
 	private String siteURL;
 	private String imageURL;
@@ -19,7 +18,7 @@ public class Restaurant extends Item implements Serializable {
 	
 	public Restaurant(long ID, String name, String websiteURL, String imgURL,
 					String phoneNumber, Location location, float ratingOf5, short priceRange) {
-		this.ID = ID;
+		setID(ID);
 		this.name = name;
 		this.siteURL = websiteURL;
 		this.imageURL = imgURL;
@@ -56,27 +55,26 @@ public class Restaurant extends Item implements Serializable {
 	    return distance;
 	}
 	private void createDirectionsURL() {
-		String[] addressTerms = getLocation().getAddress().split(" ,");
+		String[] addressTerms = getLocation().getAddress().split("[ ,]");
 		String params = addressTerms[0];
 		for (int i = 1; i < addressTerms.length; i++) {
 			params += "+" + addressTerms[i];
 		}
-		this.directionsURL = "https://www.google.com/maps/search/?api=1&query=" + params;
+		this.directionsURL = "https://www.google.com/maps/dir/?api=1&origin=801+Childs+Way+Los+Angeles&destination=" + params;
 	}
 	private String randomPhone() {
-		ArrayList<String> areaCodes = new ArrayList<String>() {{
-			add("(213)");
-			add("(424)");
-			add("(323)");
-			add("(310)");
+		ArrayList<String> areaCodes = new ArrayList<String>() {
+			private static final long serialVersionUID = 1L;
+			{
+				add("(213)");
+				add("(424)");
+				add("(323)");
+				add("(310)");
 		}};
 		int areaCodeRand = ThreadLocalRandom.current().nextInt(0, areaCodes.size());
 		int threeDigitRand = ThreadLocalRandom.current().nextInt(100, 1000);
 		int fourDigitRand = ThreadLocalRandom.current().nextInt(1000, 10000);
 		return areaCodes.get(areaCodeRand) + " " + threeDigitRand + "-" + fourDigitRand;
-	}
-	public long getID() {
-		return ID;
 	}
 	public String getName() {
 		return name;

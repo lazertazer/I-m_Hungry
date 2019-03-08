@@ -7,9 +7,9 @@ public class ListContainer {
 	
 	public ListContainer() {
 		this.userLists = new ArrayList<UserList>();
-		UserList favorites = new UserList("Favorites");
-		UserList doNotShow = new UserList("Do Not Show");
-		UserList toExplore = new UserList("To Explore");
+		UserList favorites = new UserList("Favorites", "FAV");
+		UserList doNotShow = new UserList("Do Not Show", "DNS");
+		UserList toExplore = new UserList("To Explore", "XPL");
 		userLists.add(favorites);
 		userLists.add(doNotShow);
 		userLists.add(toExplore);

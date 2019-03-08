@@ -14,24 +14,25 @@ public class Ingredient {
 		this.originalString = original;
 		fixAmount();
 	}
+	//This function formats the "amount" string to use mixed fractions
 	private void fixAmount() {
 		Float flt = Float.parseFloat(amount);
 		int ipart = (int)(float)flt;
 		float fpart = flt - ipart;
 		String frac = "";
-		if (fpart - 0.5 < 0.001) {
+		if (Math.abs(fpart - 0.5) < 0.001) {
 			frac = "1/2";
 		}
-		else if (fpart - 0.25 < 0.001) {
+		else if (Math.abs(fpart - 0.25) < 0.001) {
 			frac = "1/4";
 		}
-		else if (fpart - 0.75 < 0.001) {
+		else if (Math.abs(fpart - 0.75) < 0.001) {
 			frac = "3/4";
 		}
-		else if (fpart - 0.3333333 < 0.01) {
+		else if (Math.abs(fpart - 0.33333) < 0.01) {
 			frac = "1/3";
 		}
-		else if (fpart - 0.6666666 < 0.01) {
+		else if (Math.abs(fpart - 0.66666) < 0.01) {
 			frac = "2/3";
 		}
 		else if (fpart > 0.001) {

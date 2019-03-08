@@ -28,67 +28,76 @@ public class RestaurantSearchThread extends APIcall implements Runnable {
 		this.userLists = userLists;
 	}
 	public void run() {
-		String Zomato_url = "https://developers.zomato.com/api/v2.1/search?";	//Zomato restaurant API
-		Zomato_url += "lat=34.020560";											//Coordinates of Tommy Trojan
-		Zomato_url += "&lon=-118.285427";
-		Zomato_url += "&sort=real_distance";									//Sort by distance from TT
-		Zomato_url += "&count=" + numResults;									//Set max results
-		Zomato_url += "&q=" + parameters;										//Set query
-		
+		String ZomatoURL = buildZomatoURL(parameters, numResults);
 		try {
-			//Set up connection
-			HttpURLConnection con = (HttpURLConnection) (new URL(Zomato_url)).openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Accept", "application/json");
-			con.setRequestProperty("user-key", "796b065d0378b247df1c455220bf2e58");	//API key
-			
-			//Parse response using superclass method
-			JsonObject body = readAndParseJSON(con);
-			
+			JsonObject body = connectReadParse(ZomatoURL);
 			ArrayList<Long> doNotShowIDs = userLists.getNoShow().getRestaurantIDs();
-			
-			//Populate array of Restaurant helper class
-			JsonArray items = body.getAsJsonArray("restaurants");
-			ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
-			for (JsonElement e : items) {
-				JsonObject obj = e.getAsJsonObject().get("restaurant").getAsJsonObject();
-				
-				long ID = obj.get("id").getAsLong();
-				if (doNotShowIDs.contains(ID)) {
-					//Skip adding this restaurant because it's on the 'do not show' list
-					continue;
-				}
-				String name = obj.get("name").getAsString();
-				String websiteURL = obj.get("url").getAsString();
-				String imgURL = obj.get("featured_image").getAsString();
-				if (imgURL.equals("")) {
-					imgURL = obj.get("thumb").getAsString();
-				}
-
-				String phoneNumber = "";
-				if (obj.has("phone_numbers")) {
-					phoneNumber = obj.get("phone_numbers").getAsString();
-				}
-				
-				JsonObject JSONlocation = obj.getAsJsonObject("location");
-				String address = JSONlocation.get("address").getAsString();
-				String locality = JSONlocation.get("locality").getAsString();
-				String city = JSONlocation.get("city").getAsString();
-				double latitude = JSONlocation.get("latitude").getAsDouble();
-				double longitude = JSONlocation.get("longitude").getAsDouble();
-				String zipcode = JSONlocation.get("zipcode").getAsString();
-				Location location = new Location(address, locality, city, latitude, longitude, zipcode);
-				
-				float rating = obj.get("user_rating").getAsJsonObject().get("aggregate_rating").getAsFloat();
-				short priceRange = obj.get("price_range").getAsShort();
-				
-				//create restaurant and add to results
-				Restaurant r = new Restaurant(ID, name, websiteURL, imgURL, phoneNumber, location, rating, priceRange);
-				restaurants.add(r);
-			}
+			ArrayList<Restaurant> restaurants = parseResponseRestaurants(body, doNotShowIDs);
 			//Include restaurants in request for display on results.jsp, and save to session
-			request.setAttribute("restaurantResults", restaurants);
-			request.getSession().setAttribute("restaurantResults", restaurants);
-		} catch (IOException ioe) {}
+			if(request != null) {
+				request.setAttribute("restaurantResults", restaurants);
+				request.getSession().setAttribute("restaurantResults", restaurants);
+			}
+		} catch (IOException ioe) {System.out.println(ioe.getLocalizedMessage());}
+	}
+	public ArrayList<Restaurant> parseResponseRestaurants(JsonObject json, ArrayList<Long> doNotShowIDs) {
+		//Populate array of Restaurant helper class
+		JsonArray items = json.getAsJsonArray("restaurants");
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+		for (JsonElement e : items) {
+			JsonObject obj = e.getAsJsonObject().get("restaurant").getAsJsonObject();
+			
+			long ID = obj.get("id").getAsLong();
+			if (doNotShowIDs.contains(ID)) {
+				//Skip adding this restaurant because it's on the 'do not show' list
+				continue;
+			}
+			String name = obj.get("name").getAsString();
+			String websiteURL = obj.get("url").getAsString();
+			String imgURL = obj.get("featured_image").getAsString();
+			if (imgURL.equals("")) {
+				imgURL = obj.get("thumb").getAsString();
+			}
+			String phoneNumber = "";
+			if (obj.has("phone_numbers")) {
+				phoneNumber = obj.get("phone_numbers").getAsString();
+			}
+			
+			JsonObject JSONlocation = obj.getAsJsonObject("location");
+			String address = JSONlocation.get("address").getAsString();
+			String locality = JSONlocation.get("locality").getAsString();
+			String city = JSONlocation.get("city").getAsString();
+			double latitude = JSONlocation.get("latitude").getAsDouble();
+			double longitude = JSONlocation.get("longitude").getAsDouble();
+			String zipcode = JSONlocation.get("zipcode").getAsString();
+			Location location = new Location(address, locality, city, latitude, longitude, zipcode);
+			
+			float rating = obj.get("user_rating").getAsJsonObject().get("aggregate_rating").getAsFloat();
+			short priceRange = obj.get("price_range").getAsShort();
+			
+			//create restaurant and add to results
+			Restaurant r = new Restaurant(ID, name, websiteURL, imgURL, phoneNumber, location, rating, priceRange);
+			restaurants.add(r);
+		}
+		return restaurants;
+	}
+	public JsonObject connectReadParse(String endpoint) throws IOException {
+		//Set up connection
+		HttpURLConnection con = (HttpURLConnection) (new URL(endpoint)).openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Accept", "application/json");
+		//Zomato API key here
+		con.setRequestProperty("user-key", "796b065d0378b247df1c455220bf2e58");
+		//Parse response using superclass method
+		return readAndParseJSON(con);
+	}
+	public String buildZomatoURL(String params, int num) {
+		String ZomatoURL = "https://developers.zomato.com/api/v2.1/search?";	//Zomato restaurant API
+		ZomatoURL += "lat=34.020560";											//Coordinates of Tommy Trojan
+		ZomatoURL += "&lon=-118.285427";
+		ZomatoURL += "&sort=real_distance";										//Sort by distance from TT
+		ZomatoURL += "&count=" + num;											//Set max results
+		ZomatoURL += "&q=" + params;											//Set query
+		return ZomatoURL;
 	}
 }

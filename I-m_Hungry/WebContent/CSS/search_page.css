@@ -1,18 +1,17 @@
-@charset "ISO-8859-1";
-
-/* Tooltip container */
-
 h1{
 	font-family: arial;
     text-align: center;
     font-size: 3em;
     margin-top: 30vmin;
-    /* text-decoration: none; */
     font-style: normal;
     font-weight: normal;
 }
-html{
-	background-color: "whitesmoke";
+body{
+	background-color: #f5f5f5;	/* whitesmoke */
+	font-family: arial;
+}
+button{
+	font-family: arial;
 }
 
 form{
@@ -30,8 +29,8 @@ form{
     width: 10vmin;
 }
 .tooltip {
-  position: relative;
-  display: inline-block;
+	position: relative;
+	display: inline-block;
 }
 
 .tooltiptext{

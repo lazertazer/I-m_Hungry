@@ -1,6 +1,12 @@
-@charset "ISO-8859-1";
 body {
 	background-color: #f5f5f5;	/* Whitesmoke */
+	padding-left: 2vw;
+	font-family: arial;
+}
+button, select, td{
+	font-size: 1em;
+	font-family: arial;
+	
 }
 
 .star-ratings {
@@ -22,13 +28,12 @@ body {
     top: 0;
     left: 0;
     overflow: hidden;
-}
+  }
 .star-bottom {
     padding: 0;
     display: block;
     z-index: 0;
 }
-
 
 #dropdownButtons {
 	position: absolute;
@@ -53,22 +58,21 @@ body {
 	width: 100%;
 }
 
-
 h1 {
 	width: 100%;
 	text-align: center;
 }
 
-
 #listItemTable {
 	float: left;
-	width: 49.7%;
+	width: 100%;
 	display: inline-table;
 	border-collapse: collapse;
 }
 .listItemCell {
-	width: 100%;
+	width: 49.7%;
 	height: 12vh;
+	max-height: 12vh;
 	border: 1px solid black;
 	cursor: pointer;
 }
@@ -81,6 +85,5 @@ h1 {
 	padding-right: 2vw;
 }
 .listItemName {
-	width: 35%;
 	font-weight: bold;
 }

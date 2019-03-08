@@ -60,11 +60,13 @@
 				("Total time:&emsp;".concat(totMins))
 				: ("Prep time:&emsp; ".concat(prpMins)) } minutes
 		</div>
-			
 		<div class="metaInfo">
 			${useTot ?
 				("Servings: &emsp; ".concat(serv))
 				: ("Cook time:&emsp;".concat(cookMins).concat(" minutes"))}
+		</div>
+		<div class="metaInfo">
+			${useTot ? "" : "Servings: &emsp; ".concat(serv)}
 		</div>
 		
 		<h2 id="ingredientHeader">Ingredients</h2>

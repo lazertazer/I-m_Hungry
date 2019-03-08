@@ -34,7 +34,8 @@ public class RecipeInfoServlet extends HttpServlet {
 		short scanCount = 0;
 		
 		if (param != null) {
-			while (request.getAttribute("recipe") == null && scanCount < 5) {
+			//Scan for the recipe in the session up to 3 times
+			while (request.getAttribute("recipe") == null && scanCount < 3) {
 				HttpSession session = request.getSession();
 				Object rec = session.getAttribute("recipeResults");
 				
@@ -56,14 +57,17 @@ public class RecipeInfoServlet extends HttpServlet {
 				scanCount++;
 			}
 		}
-		if (param == null || noSession || scanCount >= 5) {
+
+		if (param == null || noSession || scanCount >= 3) {
 			//Info missing, forward to search page
-			dispatch = getServletContext().getRequestDispatcher("/search_page.html");
+			dispatch = request.getRequestDispatcher("/search.jsp");
 		}
 		else {
 			//Forward to recipe info page
-			dispatch = getServletContext().getRequestDispatcher("/recipe_info.jsp");	
+			dispatch = request.getRequestDispatcher("/recipe_info.jsp");
 		}
-		dispatch.forward(request, response);
+		if(dispatch != null) {
+			dispatch.forward(request, response);	
+		}
 	}
 }

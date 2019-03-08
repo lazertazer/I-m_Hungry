@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import utilities.Recipe;
 import utilities.Restaurant;
 
 /**
@@ -35,7 +34,8 @@ public class RestaurantInfoServlet extends HttpServlet {
 		short scanCount = 0;
 		
 		if (param != null) {
-			while (request.getAttribute("restaurant") == null && scanCount < 5) {
+			//Scan for the restaurant in the session up to 3 times
+			while (request.getAttribute("restaurant") == null && scanCount < 3) {
 				HttpSession session = request.getSession();
 				Object res = session.getAttribute("restaurantResults");
 				
@@ -57,14 +57,16 @@ public class RestaurantInfoServlet extends HttpServlet {
 				scanCount++;
 			}
 		}
-		if (param == null || noSession || scanCount >= 5) {
+		if (param == null || noSession || scanCount >= 3) {
 			//Info missing, forward to search page
-			dispatch = getServletContext().getRequestDispatcher("/search_page.html");
+			dispatch = request.getRequestDispatcher("/search.jsp");
 		}
 		else {
 			//Forward to recipe info page
-			dispatch = getServletContext().getRequestDispatcher("/restaurant_info.jsp");	
+			dispatch = request.getRequestDispatcher("/restaurant_info.jsp");
 		}
-		dispatch.forward(request, response);
+		if(dispatch != null) {
+			dispatch.forward(request, response);	
+		}
 	}
 }

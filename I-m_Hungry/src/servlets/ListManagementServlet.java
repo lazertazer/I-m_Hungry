@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,14 +9,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import utilities.ListContainer;
 import utilities.Recipe;
 import utilities.Restaurant;
 import utilities.UserList;
 
 /**
- *	TODO put description
+ *	INPUT parameters:
+ *		Destination/target list, operation,
+ *		recipe/restaurant ID (unless operation is display),
+ *		source list (only if operation is to move)
+ *	FUNCTION:
+ *		add/remove/move a recipe/restaurant from a UserList
+ *		OR simply display a list
+ *		If there is anything missing from parameters or session,
+ *			forward to search.jsp
  */
 @WebServlet("/UserLists")
 public class ListManagementServlet extends HttpServlet {
@@ -43,13 +49,13 @@ public class ListManagementServlet extends HttpServlet {
 		//id specifies a recipe or result (depends on operation)
 		String id = request.getParameter("id");
 		
-		//srclist only used when moving an item between lists
-		String srcListParam = request.getParameter("srclist");
+		//dstlist only used when moving an item between lists
+		String dstListParam = request.getParameter("dstlist");
 		
 		UserList list = null;
-		UserList srcList = null;
+		UserList dstList = null;
 		boolean missingInfo = false;
-		RequestDispatcher dispatch;
+		RequestDispatcher dispatch = null;
 		
 		if (recipeAttr != null && restaurantAttr != null && listContainerAttr != null
 				&& listParam != null && operation != null) {
@@ -74,23 +80,23 @@ public class ListManagementServlet extends HttpServlet {
 			
 			//If performing a movement operation, initialize the source list
 			if (operation.equals("moveRecipe") || operation.equals("moveRestaurant")) {
-				if (srcListParam != null) {
-					if (srcListParam.equals("FAV")) {
-						srcList = userListContainer.getFavorites();
+				if (dstListParam != null) {
+					if (dstListParam.equals("FAV")) {
+						dstList = userListContainer.getFavorites();
 					}
-					else if (srcListParam.equals("DNS")) {
-						srcList = userListContainer.getNoShow();
+					else if (dstListParam.equals("DNS")) {
+						dstList = userListContainer.getNoShow();
 					}
-					else if (srcListParam.equals("XPL")) {
-						srcList = userListContainer.getExplore();
+					else if (dstListParam.equals("XPL")) {
+						dstList = userListContainer.getExplore();
 					}
 					else {
-						//unknown source list parameter
+						//unrecognized destination list parameter
 						missingInfo = true;
 					}
 				}
 				else {
-					//missing source list parameter when required
+					//missing destination list parameter when required
 					missingInfo = true;
 				}
 			}
@@ -132,8 +138,8 @@ public class ListManagementServlet extends HttpServlet {
 						else if (operation.equals("moveRecipe")) {
 							Recipe r = getRecipeByID(recipes, itemID);
 							if (r != null) {
-								srcList.removeRecipeByID(itemID);
-								list.addRecipe(r);
+								list.removeRecipeByID(itemID);
+								dstList.addRecipe(r);
 							}
 							else {
 								missingInfo = true;
@@ -142,8 +148,8 @@ public class ListManagementServlet extends HttpServlet {
 						else if (operation.equals("moveRestaurant")) {
 							Restaurant r = getRestaurantByID(restaurants, itemID);
 							if (r != null) {
-								srcList.removeRestaurantByID(itemID);
-								list.addRestaurant(r);
+								list.removeRestaurantByID(itemID);
+								dstList.addRestaurant(r);
 							}
 							else {
 								missingInfo = true;
@@ -173,12 +179,14 @@ public class ListManagementServlet extends HttpServlet {
 		//Forward to list_management page if successful, else to search page
 		if (!missingInfo) {
 			request.setAttribute("currentList", list);
-			dispatch = getServletContext().getRequestDispatcher("/list_management.jsp");
+			dispatch = request.getRequestDispatcher("/list_management.jsp");
 		}
 		else {
-			dispatch = getServletContext().getRequestDispatcher("/search_page.html");
+			dispatch = request.getRequestDispatcher("/search.jsp");
 		}
-		dispatch.forward(request, response);
+		if(dispatch != null) {
+			dispatch.forward(request, response);	
+		}
 	}
 	private Recipe getRecipeByID(ArrayList<Recipe> recipes, long recipeID) {
 		for (Recipe r : recipes) {
